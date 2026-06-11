@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ResearchQuestionTree",
+  "type": "object",
+  "required": ["root"],
+  "properties": {
+    "root": {
+      "type": "object",
+      "required": ["id", "question", "papers", "children"],
+      "properties": {
+        "id": { "type": "string" },
+        "question": { "type": "string" },
+        "relation_to_parent": { "type": "string" },
+        "papers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["paper_id", "title"],
+            "properties": {
+              "paper_id": { "type": "string" },
+              "title": { "type": "string" },
+              "abstract": { "type": "string" },
+              "rq_id": { "type": "string" }
+            }
+          }
+        },
+        "children": { "type": "array" }
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PaperResearchQuestions",
+  "type": "object",
+  "required": ["paper_id", "title", "research_questions"],
+  "properties": {
+    "paper_id": { "type": "string" },
+    "title": { "type": "string" },
+    "abstract": { "type": "string" },
+    "sections_read": { "type": "array", "items": { "type": "string" } },
+    "research_questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "text", "type", "explicit"],
+        "properties": {
+          "id": { "type": "string" },
+          "text": { "type": "string" },
+          "type": { "enum": ["main", "sub"] },
+          "explicit": { "type": "boolean" },
+          "source_section": { "type": "string" },
+          "evidence_quote": { "type": "string" },
+          "confidence": { "enum": ["high", "medium", "low"] }
+        }
+      }
+    },
+    "extraction_notes": { "type": "string" }
+  }
+}
