@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🤖 机器人行业技能树</title>
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+  --green: #3fb950; --orange: #d2991d; --red: #f85149;
+  --purple: #a371f7; --teal: #39d353;
+  --foundation: #58a6ff; --control: #f0883e; --perception: #a371f7;
+  --manipulation: #3fb950; --product: #f85149;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;overflow-x:hidden}
+.header{background:var(--card);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.header h1{font-size:1.3rem;font-weight:600}
+.stats{display:flex;gap:20px;font-size:.85rem;color:var(--muted)}
+.stats span{display:flex;align-items:center;gap:6px}
+.stats .num{font-size:1.2rem;font-weight:700;color:var(--accent)}
+.stats .num.done{color:var(--green)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;padding:12px 24px;font-size:.8rem;color:var(--muted);border-bottom:1px solid var(--border)}
+.legend-item{display:flex;align-items:center;gap:6px}
+.legend-dot{width:10px;height:10px;border-radius:2px}
+.main{padding:24px;overflow-x:auto}
+.tree{display:grid;grid-template-columns:repeat(5,1fr);gap:16px 20px;min-width:1100px;max-width:1400px;margin:0 auto}
+.branch-header{grid-column:span 1;text-align:center;padding:12px 8px;font-weight:600;font-size:.95rem;border-radius:6px;position:sticky;top:60px;z-index:10}
+.bh-foundation{background:rgba(88,166,255,.12);color:var(--foundation)}
+.bh-control{background:rgba(240,136,62,.12);color:var(--control)}
+.bh-perception{background:rgba(163,113,247,.12);color:var(--perception)}
+.bh-manipulation{background:rgba(63,185,80,.12);color:var(--manipulation)}
+.bh-product{background:rgba(248,81,73,.12);color:var(--product)}
+
+.node{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px 12px;cursor:pointer;transition:all .2s;position:relative;min-height:90px;display:flex;flex-direction:column;gap:6px}
+.node:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.node.completed{border-color:var(--green);background:rgba(63,185,80,.06)}
+.node.completed::after{content:"✓";position:absolute;top:8px;right:10px;color:var(--green);font-weight:700;font-size:.9rem}
+.node.locked{opacity:.45;cursor:not-allowed;border-style:dashed}
+.node.locked:hover{transform:none;box-shadow:none}
+.node .tier{font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em}
+.node .icon{font-size:1.4rem;line-height:1}
+.node .name{font-size:.82rem;font-weight:600;line-height:1.3}
+.node .why{font-size:.68rem;color:var(--muted);line-height:1.4;display:none}
+.node:hover .why{display:block}
+.node .tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:auto}
+.node .tag{font-size:.6rem;padding:2px 6px;border-radius:3px;background:rgba(139,148,158,.12);color:var(--muted)}
+.tier-label{grid-column:span 5;text-align:center;padding:8px;font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.15em;border-top:1px solid var(--border);margin-top:8px}
+
+.reset-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:.8rem;transition:all .2s}
+.reset-btn:hover{border-color:var(--red);color:var(--red)}
+
+/* SVG connectors */
+.connectors{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.node-connector{stroke:var(--border);stroke-width:1.5;fill:none}
+.node-connector.active{stroke:var(--green);stroke-width:2}
+
+.footer{text-align:center;padding:32px;font-size:.75rem;color:var(--muted)}
+.footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>🤖 机器人行业技能树</h1>
+    <div style="font-size:.75rem;color:var(--muted);margin-top:2px">Minecraft 成就树风格 · 点击打卡 · 进度保存在浏览器</div>
+  </div>
+  <div class="stats">
+    <span>✅ <span class="num done" id="doneCount">0</span> / <span class="num" id="totalCount">0</span> 已完成</span>
+    <span>📊 <span class="num" id="pctCount">0%</span></span>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">🔄 重置</button>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:var(--foundation)"></div>基础</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--control)"></div>控制&RL</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--perception)"></div>感知</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--manipulation)"></div>操作</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--product)"></div>AI产品&研究</div>
+  <div class="legend-item" style="margin-left:12px">|</div>
+  <div class="legend-item"><span style="color:var(--green)">✓</span> 已完成</div>
+  <div class="legend-item"><span style="color:var(--muted)">⬜</span> 未开始</div>
+  <div class="legend-item"><span style="opacity:.4">🔒</span> 未解锁</div>
+</div>
+
+<div class="main">
+  <div class="tree" id="tree"></div>
+</div>
+
+<div class="footer">
+  数据来源：傅利叶智能 · 英伟达 · 美的 · 智元机器人 · 华为 · vivo · 字节跳动 · 小红书 · 上交工研院 等公司最新招聘要求<br>
+  技能树基于 2026 年 6 月头部机器人公司 13 份岗位 JD 分析构建
+</div>
+
+<script>
+// ==================== DATA ====================
+const BRANCHES = [
+  { id: 'foundation', name: '🔧 基础能力', color: 'foundation', colorHex: '#58a6ff' },
+  { id: 'control', name: '🤖 运动控制 & RL', color: 'control', colorHex: '#f0883e' },
+  { id: 'perception', name: '👁️ 感知', color: 'perception', colorHex: '#a371f7' },
+  { id: 'manipulation', name: '✋ 操作', color: 'manipulation', colorHex: '#3fb950' },
+  { id: 'product', name: '📊 AI产品 & 研究', color: 'product', colorHex: '#f85149' },
+];
+
+const TIERS = ['T1 入门', 'T2 基础', 'T3 进阶', 'T4 专家', 'T5 大师'];
+
+const NODES = [
+  // ===== FOUNDATION =====
+  {id:'f1', branch:'foundation', tier:1, icon:'🐍', name:'Python', why:'所有机器人框架的默认语言。数据处理、模型训练、脚本自动化的基础。', tags:['13/13岗位'], prereq:[]},
+  {id:'f2', branch:'foundation', tier:2, icon:'⚙️', name:'C++', why:'真机部署需要实时控制，Python太慢。底层驱动和控制器用C++。英伟达/智元明确要求。', tags:['3/13岗位'], prereq:['f1']},
+  {id:'f3', branch:'foundation', tier:2, icon:'🐧', name:'Linux + Git', why:'仿真环境和真机控制器基本都跑Linux。代码协作必须Git。', tags:['5/13岗位'], prereq:['f1']},
+  {id:'f4', branch:'foundation', tier:2, icon:'🔥', name:'PyTorch', why:'训练RL策略、微调VLA模型的事实标准。所有机器人岗都要求。', tags:['8/13岗位'], prereq:['f1']},
+  {id:'f5', branch:'foundation', tier:3, icon:'🐳', name:'Docker', why:'环境复现和部署的基础设施。Sim-to-Real流程依赖容器化。', tags:['3/13岗位'], prereq:['f3']},
+  {id:'f6', branch:'foundation', tier:3, icon:'🤖', name:'ROS2', why:'机器人操作系统。节点通信、传感器驱动、真机中间件的标准。', tags:['4/13岗位'], prereq:['f3','f4']},
+  {id:'f7', branch:'foundation', tier:3, icon:'📐', name:'线性代数+概率', why:'理解DH参数、雅可比矩阵、卡尔曼滤波、贝叶斯推断的数学基础。', tags:['核心能力'], prereq:[]},
+  {id:'f8', branch:'foundation', tier:4, icon:'📦', name:'NumPy + Matplotlib', why:'数值计算和数据可视化。轨迹分析、训练曲线、实验报告都离不开。', tags:['6/13岗位'], prereq:['f1','f7']},
+
+  // ===== CONTROL & RL =====
+  {id:'c1', branch:'control', tier:1, icon:'🎮', name:'MuJoCo / Isaac Gym', why:'人形机器人训练的主流仿真平台。英伟达生态核心。', tags:['6/13岗位'], prereq:['f1']},
+  {id:'c2', branch:'control', tier:2, icon:'🧠', name:'RL基础 (MDP/Q-learning)', why:'理解状态空间、动作空间、奖励函数、折扣因子。RL的理论起点。', tags:['核心能力'], prereq:['c1','f7']},
+  {id:'c3', branch:'control', tier:2, icon:'🔗', name:'运动学 (FK/IK)', why:'正/逆运动学是机器人控制的第一课。你的6-DOF项目直接覆盖。', tags:['已有基础'], prereq:['f7']},
+  {id:'c4', branch:'control', tier:3, icon:'⚡', name:'PPO / SAC 实现', why:'人形机器人运动控制的核心算法。美的/智元/傅利叶明确要求。', tags:['5/13岗位'], prereq:['c2','f4']},
+  {id:'c5', branch:'control', tier:3, icon:'🌉', name:'Sim-to-Real 迁移', why:'仿真训练的策略部署到真机必然有gap。Domain Randomization是关键。', tags:['4/13岗位'], prereq:['c4']},
+  {id:'c6', branch:'control', tier:3, icon:'🦿', name:'轨迹优化 (MPC/TO)', why:'模型预测控制+轨迹优化，与RL互补的传统方法。美的岗要求。', tags:['2/13岗位'], prereq:['c3']},
+  {id:'c7', branch:'control', tier:4, icon:'🎭', name:'模仿学习 (ACT/Diffusion)', why:'从人类视频/动捕数据学习策略。英伟达岗核心要求。', tags:['3/13岗位'], prereq:['c4']},
+  {id:'c8', branch:'control', tier:4, icon:'🏃', name:'全身控制 (WBC)', why:'协调人形机器人所有关节完成复杂运动。英伟达加分项。', tags:['1/13岗位'], prereq:['c6']},
+  {id:'c9', branch:'control', tier:4, icon:'🔬', name:'真机部署调试', why:'将仿真策略部署到真实机器人，分析sim-real gap。傅利叶核心要求。', tags:['5/13岗位'], prereq:['c5']},
+  {id:'c10', branch:'control', tier:5, icon:'📝', name:'顶会论文 (ICRA/RSS/CoRL)', why:'英伟达/美的明确加分。是进入顶尖机器人团队的硬通货。', tags:['3/13岗位'], prereq:['c7','c9']},
+  {id:'c11', branch:'control', tier:5, icon:'🌟', name:'开源RL框架贡献', why:'向Isaac Lab/RLlib等贡献代码，证明工程能力。英伟达加分。', tags:['2/13岗位'], prereq:['c9','f5']},
+  {id:'c12', branch:'control', tier:5, icon:'🏆', name:'完整机器人项目', why:'从仿真→训练→Sim2Real→真机验证的闭环项目。智元/傅利叶核心要求。', tags:['7/13岗位'], prereq:['c9','c10']},
+
+  // ===== PERCEPTION =====
+  {id:'p1', branch:'perception', tier:1, icon:'👀', name:'OpenCV + 图像处理', why:'视觉感知的第一步。目标检测、特征提取、相机标定的基础。', tags:['3/13岗位'], prereq:['f1']},
+  {id:'p2', branch:'perception', tier:2, icon:'📷', name:'3D视觉 (点云/深度)', why:'操作任务需要理解物体空间位置。英伟达明确要求3D感知。', tags:['2/13岗位'], prereq:['p1','f7']},
+  {id:'p3', branch:'perception', tier:2, icon:'🎯', name:'目标检测 (YOLO/SAM)', why:'识别物体位置和类别。操作任务的第一步是"看到"物体。', tags:['3/13岗位'], prereq:['p1','f4']},
+  {id:'p4', branch:'perception', tier:3, icon:'🧩', name:'VLM 微调与应用', why:'视觉语言模型让机器人理解自然语言指令+视觉场景。美的核心。', tags:['4/13岗位'], prereq:['p1','f4']},
+  {id:'p5', branch:'perception', tier:3, icon:'🔮', name:'多模态融合', why:'视觉+触觉+力反馈多传感器融合，提升决策鲁棒性。智元RL岗要求。', tags:['2/13岗位'], prereq:['p2']},
+  {id:'p6', branch:'perception', tier:4, icon:'🚀', name:'VLA 模型部署 (OpenVLA)', why:'端到端视觉-语言-动作模型。美的明确优先条件。', tags:['3/13岗位'], prereq:['p4','c4']},
+  {id:'p7', branch:'perception', tier:4, icon:'⚡', name:'实时感知流水线', why:'毫秒级推理延迟要求。需GPU优化+模型量化。英伟达岗要求。', tags:['2/13岗位'], prereq:['p6','f5']},
+  {id:'p8', branch:'perception', tier:5, icon:'📝', name:'顶会论文 (CVPR/ICLR)', why:'感知方向的学术成果。美的/英伟达加分。', tags:['2/13岗位'], prereq:['p6','p7']},
+  {id:'p9', branch:'perception', tier:5, icon:'🔧', name:'感知框架贡献', why:'向OpenVLA/RT-2等开源框架贡献。证明工程+研究双重能力。', tags:['1/13岗位'], prereq:['p6']},
+  {id:'p10', branch:'perception', tier:5, icon:'🎯', name:'端到端感知-控制闭环', why:'VLA模型驱动机器人完成真实任务。美的/智元岗位核心目标。', tags:['4/13岗位'], prereq:['p7','c12']},
+
+  // ===== MANIPULATION =====
+  {id:'m1', branch:'manipulation', tier:1, icon:'✋', name:'运动规划 (RRT/PRM)', why:'机械臂路径规划的基础算法。你的6-DOF项目已涉及。', tags:['已有基础'], prereq:['c3']},
+  {id:'m2', branch:'manipulation', tier:2, icon:'🦾', name:'抓取基础 (GraspNet)', why:'6D姿态估计+抓取点生成。操作任务的起点。', tags:['3/13岗位'], prereq:['m1','p3']},
+  {id:'m3', branch:'manipulation', tier:2, icon:'💪', name:'力/力矩感知与控制', why:'力控让机器人不是"硬碰硬"而是"柔顺"操作。智元RL岗要求。', tags:['2/13岗位'], prereq:['c3']},
+  {id:'m4', branch:'manipulation', tier:3, icon:'🤌', name:'灵巧手操作', why:'多指手的精细操作。英伟达明确要求dexterous manipulation。', tags:['1/13岗位'], prereq:['m2','m3']},
+  {id:'m5', branch:'manipulation', tier:3, icon:'🖐️', name:'触觉传感', why:'触觉反馈闭环控制。智元RL岗明确要求。', tags:['1/13岗位'], prereq:['m3']},
+  {id:'m6', branch:'manipulation', tier:3, icon:'🤝', name:'双臂协调', why:'两只手协作完成任务。英伟达bimanual coordination。', tags:['1/13岗位'], prereq:['m2','c4']},
+  {id:'m7', branch:'manipulation', tier:4, icon:'🏠', name:'移动操作', why:'移动底盘+机械臂联合控制。英伟达mobile manipulation。', tags:['2/13岗位'], prereq:['m2','c9']},
+  {id:'m8', branch:'manipulation', tier:4, icon:'🧭', name:'长周期任务规划', why:'分解复杂任务为子任务序列。智元RL岗long-horizon planning。', tags:['2/13岗位'], prereq:['m7']},
+  {id:'m9', branch:'manipulation', tier:5, icon:'📝', name:'顶会论文 (ICRA/IROS)', why:'操作方向的学术成果。英伟达/美的加分。', tags:['2/13岗位'], prereq:['m4','m7']},
+  {id:'m10', branch:'manipulation', tier:5, icon:'🏆', name:'完整操作系统', why:'从感知→规划→控制→执行的闭环系统。美的/智元岗位终极目标。', tags:['3/13岗位'], prereq:['m7','p10']},
+
+  // ===== PRODUCT & RESEARCH =====
+  {id:'r1', branch:'product', tier:1, icon:'💬', name:'LLM 应用开发', why:'调用API、设计Prompt、搭建Agent。字节/小红书AI产品岗核心。', tags:['4/13岗位'], prereq:['f1']},
+  {id:'r2', branch:'product', tier:2, icon:'🔍', name:'RAG + Agent框架', why:'检索增强生成+自主Agent。AI产品岗必备技术理解。', tags:['3/13岗位'], prereq:['r1']},
+  {id:'r3', branch:'product', tier:2, icon:'🎨', name:'AI工具重度使用', why:'Cursor/Claude/GPT日常使用。字节AI Builder明确要求。', tags:['3/13岗位'], prereq:['r1']},
+  {id:'r4', branch:'product', tier:3, icon:'📋', name:'PRD 撰写+原型设计', why:'产品经理基本功。小红书/字节明确要求。', tags:['3/13岗位'], prereq:['r1']},
+  {id:'r5', branch:'product', tier:3, icon:'📊', name:'用户研究方法论', why:'访谈/问卷/可用性测试/焦点小组。华为/vivo/字节用研岗核心。', tags:['4/13岗位'], prereq:[]},
+  {id:'r6', branch:'product', tier:3, icon:'📈', name:'竞品分析', why:'了解市场方案，避免重复造轮子。上交工研院/AI产品岗要求。', tags:['3/13岗位'], prereq:['r1']},
+  {id:'r7', branch:'product', tier:4, icon:'🔬', name:'实验设计+统计分析', why:'独立设计心理学实验，SPSS/Python数据分析。vivo核心要求。', tags:['2/13岗位'], prereq:['r5','f7']},
+  {id:'r8', branch:'product', tier:4, icon:'🏗️', name:'多Agent系统设计', why:'多个AI Agent协作完成复杂任务。AI产品进阶方向。', tags:['2/13岗位'], prereq:['r2','f1']},
+  {id:'r9', branch:'product', tier:5, icon:'🚀', name:'AI产品上线', why:'从0到1交付AI产品。字节/小红书产品岗终极目标。', tags:['3/13岗位'], prereq:['r4','r8']},
+  {id:'r10', branch:'product', tier:5, icon:'📝', name:'行业研究报告', why:'发表AI产业分析或被引用。上交工研院/AI产品岗加分。', tags:['2/13岗位'], prereq:['r6','r5']},
+];
+
+// ==================== STATE ====================
+const STORAGE_KEY = 'robot-skill-tree-state';
+let completed = new Set();
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) completed = new Set(JSON.parse(raw));
+  } catch(e) { completed = new Set(); }
+}
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify([...completed]));
+  updateStats();
+}
+function toggleNode(id) {
+  const node = NODES.find(n => n.id === id);
+  if (!node) return;
+  if (!canUnlock(node)) return;
+  if (completed.has(id)) completed.delete(id);
+  else completed.add(id);
+  saveState();
+  render();
+}
+
+function canUnlock(node) {
+  if (completed.has(node.id)) return true; // already completed, can uncheck
+  return node.prereq.every(pid => completed.has(pid));
+}
+
+function resetAll() {
+  if (confirm('确定要重置所有打卡进度吗？此操作不可撤销。')) {
+    completed.clear();
+    saveState();
+    render();
+  }
+}
+
+function updateStats() {
+  const total = NODES.length;
+  const done = completed.size;
+  document.getElementById('doneCount').textContent = done;
+  document.getElementById('totalCount').textContent = total;
+  document.getElementById('pctCount').textContent = Math.round(done/total*100) + '%';
+}
+
+// ==================== RENDER ====================
+function render() {
+  const tree = document.getElementById('tree');
+  tree.innerHTML = '';
+
+  // Branch headers
+  BRANCHES.forEach(b => {
+    const h = document.createElement('div');
+    h.className = `branch-header bh-${b.color}`;
+    h.textContent = b.name;
+    h.style.gridRow = '1';
+    tree.appendChild(h);
+  });
+
+  // Render by tier
+  TIERS.forEach((tierLabel, ti) => {
+    const tierNum = ti + 1;
+    // Tier label row
+    const label = document.createElement('div');
+    label.className = 'tier-label';
+    label.textContent = `${tierLabel}  —  ${tierNum === 1 ? '入门' : tierNum === 2 ? '打好基础' : tierNum === 3 ? '核心能力' : tierNum === 4 ? '专项深入' : '行业认可'}`;
+    label.style.gridRow = `${ti * 3 + 2}`;
+    tree.appendChild(label);
+
+    // Nodes row
+    const rowStart = ti * 3 + 3;
+    BRANCHES.forEach((b, bi) => {
+      const branchNodes = NODES.filter(n => n.branch === b.id && n.tier === tierNum);
+      const col = document.createElement('div');
+      col.style.gridRow = `${rowStart}`;
+      col.style.display = 'flex';
+      col.style.flexDirection = 'column';
+      col.style.gap = '10px';
+
+      branchNodes.forEach(node => {
+        const el = document.createElement('div');
+        const isCompleted = completed.has(node.id);
+        const isUnlocked = canUnlock(node);
+        el.className = 'node' + (isCompleted ? ' completed' : '') + (!isUnlocked && !isCompleted ? ' locked' : '');
+        el.onclick = () => toggleNode(node.id);
+
+        const prereqText = node.prereq.length > 0
+          ? `<div style="font-size:.6rem;color:var(--muted);margin-top:2px">前置: ${node.prereq.map(pid => {
+              const pn = NODES.find(n => n.id === pid);
+              return `<span style="color:${completed.has(pid)?'var(--green)':'var(--muted)'}">${pn ? pn.name : pid}</span>`;
+            }).join(', ')}</div>`
+          : '';
+
+        el.innerHTML = `
+          <div class="tier" style="color:var(--${b.color})">T${node.tier}</div>
+          <div class="icon">${node.icon}</div>
+          <div class="name">${node.name}</div>
+          <div class="why">💡 ${node.why}</div>
+          ${node.tags.length > 0 ? `<div class="tags">${node.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>` : ''}
+          ${prereqText}
+        `;
+        col.appendChild(el);
+      });
+
+      if (branchNodes.length === 0) {
+        const empty = document.createElement('div');
+        empty.style.minHeight = '60px';
+        col.appendChild(empty);
+      }
+
+      tree.appendChild(col);
+    });
+
+    // Spacer row
+    if (ti < TIERS.length - 1) {
+      const spacer = document.createElement('div');
+      spacer.style.gridRow = `${ti * 3 + 4}`;
+      spacer.style.height = '8px';
+      spacer.style.gridColumn = 'span 5';
+      tree.appendChild(spacer);
+    }
+  });
+
+  updateStats();
+}
+
+// ==================== INIT ====================
+loadState();
+render();
+</script>
+</body>
+</html>
