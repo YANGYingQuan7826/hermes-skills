@@ -196,9 +196,9 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 
   <div class="recruit-filter">
     <button class="active" onclick="filterProjects('all',this)">全部</button>
-    <button onclick="filterProjects('T1-T2',this)">⭐ 入门-基础</button>
-    <button onclick="filterProjects('T3',this)">🔥 进阶</button>
-    <button onclick="filterProjects('T4-T5',this)">🚀 专家-大师</button>
+    <button onclick="filterProjects('phase-1',this)">🔴 阶段一·必须做</button>
+    <button onclick="filterProjects('phase-2',this)">🟡 阶段二·强烈建议</button>
+    <button onclick="filterProjects('phase-3',this)">🟢 阶段三·可选加分</button>
     <button onclick="filterProjects('done',this)">✅ 已有基础</button>
   </div>
 
@@ -300,15 +300,15 @@ const JOBS = [
 
 // ==================== PROJECT DATA ====================
 const PROJECTS = [
-  {id:'proj-1',icon:'🦾',title:'六自由度机械臂建模与仿真',difficulty:'T1-T2',status:'done',desc:'你已有的6-DOF项目。用DH参数建立运动学模型，实现正/逆运动学求解，在MATLAB/Python中可视化工作空间。这是操作分支的起点。',nodes:['c3','f7','m1','f1'],steps:['建立DH参数表','正运动学求解','逆运动学（几何法或数值法）','工作空间可视化','轨迹规划（关节空间）']},
-  {id:'proj-2',icon:'🐍',title:'Python机器人工具链搭建',difficulty:'T1-T2',status:'todo',desc:'搭建完整的Python机器人开发环境：PyTorch + NumPy + Matplotlib + Jupyter。用Python实现简单的路径规划算法(RRT)和运动控制仿真。',nodes:['f1','f4','f8','m1'],steps:['安装配置开发环境','NumPy矩阵运算实践','Matplotlib 3D可视化','实现RRT路径规划','编写可复用工具函数库']},
-  {id:'proj-3',icon:'🎮',title:'MuJoCo人形机器人行走',difficulty:'T3',status:'todo',desc:'在MuJoCo中加载人形机器人模型，用PPO/SAC训练行走策略。设计奖励函数（速度、稳定性、能耗），理解RL训练的完整pipeline。这是控制分支的核心项目。',nodes:['c1','c2','c4','f4','f7'],steps:['安装MuJoCo+环境搭建','加载人形机器人模型','设计状态空间/动作空间','编写PPO训练代码','奖励函数设计与调优','训练曲线分析与可视化']},
-  {id:'proj-4',icon:'👀',title:'YOLO+OpenCV目标检测与抓取点定位',difficulty:'T2-T3',status:'todo',desc:'用YOLO检测桌面物体，结合深度相机计算6D位姿，生成抓取点(GraspNet思路)。将检测结果可视化并输出抓取坐标。感知+操作的基础衔接项目。',nodes:['p1','p3','p2','m2','f4'],steps:['YOLO模型部署与推理','深度相机点云获取','物体6D位姿估计','抓取点生成算法','ROS2节点可视化']},
-  {id:'proj-5',icon:'🌉',title:'Sim-to-Real 迁移实验',difficulty:'T3-T4',status:'todo',desc:'在仿真中训练好的行走策略部署到真实机器人（可用宇树Go2或类似平台）。实现Domain Randomization、系统辨识，分析并缩小sim-real gap。控制分支的高阶项目。',nodes:['c5','c9','c4','c1','f5'],steps:['仿真策略导出','Domain Randomization实现','真机通信接口开发','部署与调试','Sim-Real Gap量化分析']},
-  {id:'proj-6',icon:'🚀',title:'OpenVLA 微调与部署',difficulty:'T4',status:'todo',desc:'在OpenVLA开源模型上微调自定义操作任务。准备演示数据集，进行LoRA微调，部署到推理服务器。这是感知分支最直接通往招聘要求的项目。',nodes:['p6','p4','p5','f4','f5'],steps:['OpenVLA模型下载与理解','收集/标注操作演示数据','LoRA微调训练','推理服务器部署','真机闭环测试']},
-  {id:'proj-7',icon:'🤖',title:'ROS2机器人导航系统',difficulty:'T3',status:'todo',desc:'用ROS2搭建完整的机器人导航pipeline：SLAM建图 → 全局路径规划 → 局部避障 → 自主导航。集成真实传感器(激光雷达/深度相机)。基础能力分支的集大成项目。',nodes:['f6','f5','f3','m1'],steps:['ROS2环境搭建','SLAM建图(Gmapping/Cartographer)','全局路径规划(Nav2)','传感器驱动集成','自主导航Demo']},
-  {id:'proj-8',icon:'🏃',title:'全身控制(WBC)算法实践',difficulty:'T4-T5',status:'todo',desc:'在人形机器人仿真模型上实现Whole-Body Control：协调双臂+双腿+躯干完成复杂运动（如拿取物体同时保持平衡）。复现论文中的WBC方法。控制分支的大师级项目。',nodes:['c8','c6','c4','c3','c9'],steps:['WBC理论梳理(QP优化框架)','任务优先级设计','QP求解器集成','仿真验证(多种运动模式)','性能分析与优化']},
-  {id:'proj-9',icon:'🏆',title:'端到端感知-控制闭环系统',difficulty:'T5',status:'todo',desc:'VLA模型驱动机器人完成真实拾取-放置任务。从RGB图像输入→VLA推理→动作输出→真机执行。这是技能树的终极目标，直接对应智元/傅利叶招聘核心要求。',nodes:['p10','p6','p7','c12','c9','m10'],steps:['VLA模型选型与部署','感知-控制接口开发','真机通信与安全机制','多轮任务测试','系统性能分析与报告']}
+  {id:'proj-1',icon:'🦾',title:'六自由度机械臂建模与仿真',phase:'phase-0',difficulty:'T1-T2',status:'done',desc:'你已有的6-DOF项目。用DH参数建立运动学模型，实现正/逆运动学求解，在MATLAB/Python中可视化工作空间。这是操作分支的起点，奠定了运动学基础。',nodes:['c3','f7','m1','f1'],steps:['建立DH参数表','正运动学求解','逆运动学（几何法或数值法）','工作空间可视化','轨迹规划（关节空间）'],interview:''},
+  {id:'proj-2',icon:'🎮',title:'MuJoCo Humanoid 从零实现 PPO',phase:'phase-1',difficulty:'T3',status:'todo',desc:'【阶段一·必须做】傅利叶、智元、美的的 RL 岗位都直接要求 Isaac 和 MuJoCo 经验。手写 PPO 证明你理解算法而不是只会调包。',nodes:['c1','c2','c4','f4','f7'],steps:['安装 MuJoCo + Gymnasium，跑通 Humanoid-v5 环境的 random agent','用 PyTorch 手写 PPO：Actor-Critic 网络、GAE、clip loss、value loss、entropy bonus','训练到 reward > 5000（大约 2000-5000 万步）','录视频：你的策略控制 Humanoid 行走','分析训练曲线：收敛速度、reward 波动、entropy 衰减'],interview:'我独立实现了 PPO 算法并在 MuJoCo Humanoid 上完成 locomotion 训练。过程中我理解了 reward shaping 对步态的影响——如果不加 velocity reward，策略会退化为原地站立；如果不加 action smoothness penalty，会出现高频抖动的作弊行为。'},
+  {id:'proj-3',icon:'🏭',title:'Isaac Lab 人形机器人 Locomotion',phase:'phase-1',difficulty:'T3-T4',status:'todo',desc:'【阶段一·必须做】工业界标配。傅利叶和 NVIDIA 直接把 Isaac Lab 写在 JD 里。这是从"会用 MuJoCo"升级到"会用工业级仿真平台"的关键一步。',nodes:['c1','c5','c4','f4','f5'],steps:['安装 Isaac Sim + Isaac Lab（AutoDL 租 A100 GPU 云服务器）','跑通官方 Humanoid locomotion example','修改 reward 函数中至少 3 个参数，对比训练结果','给 Humanoid 加扰动测试（突然施加外力），看策略鲁棒性','实现 domain randomization 最小版本：随机化摩擦力、质量，对比成功率'],interview:'我在 Isaac Lab 上复现了 Humanoid locomotion 基线，并通过修改 reward 函数和添加 domain randomization 提升了策略在随机物理参数下的鲁棒性，成功率从 65% 提升到 85%。这让我理解了为什么 sim-to-real 迁移中 domain randomization 是必需的——仿真和真机的物理参数差异是系统性的，不是靠调 reward 能解决的。'},
+  {id:'proj-4',icon:'🚀',title:'复现并微调 OpenVLA',phase:'phase-2',difficulty:'T4',status:'todo',desc:'【阶段二·强烈建议】只做 RL 你就是"运动控制实习生"，加上多模态能力你就是"具身智能实习生"——薪资和 HC 都差一档。美的 JD 直接列了 OpenVLA。',nodes:['p6','p4','p5','f4','f5'],steps:['读 OpenVLA 论文：理解架构 SigLIP → 投影层 → LLaMA → 输出动作 token','在 Colab/AutoDL 上跑通 OpenVLA inference demo（官方 checkpoint）','收集小型操作数据集（BridgeData V2 subset，约 500 条）','用 LoRA 微调 OpenVLA','对比微调前后的任务成功率'],interview:'我复现了 OpenVLA 并在 BridgeData V2 子集上做了 LoRA 微调。过程中我理解了 VLA 的核心设计——把连续动作离散化为 token、用预训练 LLM 的推理能力做任务规划。我也发现了当前 VLA 的关键局限：长程任务的动作漂移问题——模型在第 10 步后的预测准确率显著下降。'},
+  {id:'proj-5',icon:'📚',title:'仿人机器人论文知识库 + RAG 问答系统',phase:'phase-2',difficulty:'T2-T3',status:'todo',desc:'【阶段二·强烈建议】利用你已有的 200+ 篇文献积累，产出很快。面试时任何技术方向你都能说出关键论文和 SOTA。',nodes:['r1','r2','f1','f4'],steps:['把毕设 200+ 篇文献摘要和关键结论向量化（BGE 或 text-embedding-3）','用 ChromaDB 或 FAISS 做向量检索','搭 RAG pipeline：用户提问 → 检索相关论文 → DeepSeek API 生成回答','前端用 Streamlit 做极简界面','可演示的 Web 应用'],interview:'我基于 200+ 篇人形机器人文献构建了 RAG 知识库，这让我对领域知识有系统性的掌握。面试中你提到的任何技术方向——比如 sim-to-real、whole-body control、模仿学习——我都能说出关键论文和当前 SOTA。'},
+  {id:'proj-6',icon:'🐕',title:'宇树 Go2 真机策略部署',phase:'phase-3',difficulty:'T4-T5',status:'todo',desc:'【阶段三·可选但强力加分】在宇树 Go2 上部署仿真训练的策略。几乎所有机器人公司的 RL 岗位都看重真机部署经验。形成"仿真→真机"的完整闭环。',nodes:['c5','c9','c1','c4','f2'],steps:['在 Isaac Lab 中训练 Go2 locomotion 策略（宇树官方提供 URDF）','将训练好的 PyTorch 模型导出为 ONNX','部署到 Go2 实机：测试 walking、turning、楼梯等场景','记录 sim 和 real 的表现差异，分析 domain gap','录制真机部署视频'],interview:'我完成了从 Isaac Lab 仿真训练到宇树 Go2 真机部署的完整闭环。我发现最大的 domain gap 来自接触动力学——仿真中足端与地面的接触是理想的，而真机中摩擦力、地面不平整度、电机响应延迟都导致策略行为偏差。我通过 domain randomization 和少量真机 fine-tuning 数据缓解了这个问题。'},
+  {id:'proj-7',icon:'🌟',title:'贡献 Isaac Lab 开源项目',phase:'phase-3',difficulty:'T4-T5',status:'todo',desc:'【阶段三·可选，零成本】给 Isaac Lab 修一个 bug、加一个文档示例、或提交一个新环境。面试时你可以说"我给 Isaac Lab 提过 PR"——极强的信号，说明你不仅会用工具，还能参与生态建设。',nodes:['c1','c11','f3','f4'],steps:['Fork Isaac Lab 仓库，阅读贡献指南','找一个 good first issue 或自己发现一个 bug','修一个 bug / 加一个文档示例 / 提交一个新环境','提交 PR，回应 review 意见','PR 被 merge 后在简历上列出'],interview:'我给 Isaac Lab 提交了 PR 并被 merge。这个过程中我深入阅读了 Isaac Lab 的代码架构，理解了它的环境注册机制和并行训练设计。这让我的工程能力不再停留在"跑通 demo"，而是真正理解了工业级仿真平台的内部运作。'},
+  {id:'proj-8',icon:'👀',title:'YOLO + 深度相机 6D 抓取点定位',phase:'phase-2',difficulty:'T2-T3',status:'todo',desc:'【阶段二·可选】用 YOLO 检测桌面物体，结合深度相机计算 6D 位姿，生成抓取点。感知+操作的基础衔接项目。对接操作方向的实习岗位。',nodes:['p1','p3','p2','m2','f4'],steps:['YOLO 模型部署与推理','深度相机点云获取','物体 6D 位姿估计','抓取点生成算法','ROS2 节点可视化'],interview:'我搭建了从视觉检测到抓取点生成的完整 pipeline。这个过程让我理解了感知和操作之间的鸿沟——YOLO 的 2D 检测结果必须和深度相机的 3D 点云精确对齐，任何标定误差都会导致抓取失败。'},
+  {id:'proj-9',icon:'🏆',title:'端到端感知-控制闭环系统',phase:'phase-3',difficulty:'T5',status:'todo',desc:'【终极目标】VLA 模型驱动机器人完成真实拾取-放置任务：RGB 输入 → VLA 推理 → 动作输出 → 真机执行。直接对应智元/傅利叶招聘核心要求。',nodes:['p10','p6','p7','c12','c9','m10'],steps:['VLA 模型选型与部署','感知-控制接口开发','真机通信与安全机制','多轮任务测试','系统性能分析与报告'],interview:'我构建了端到端的感知-控制闭环系统——从 RGB 图像输入到真机动作输出的完整链路。这个项目集成了我所有的技能：RL 训练、VLA 微调、真机部署、系统集成。它证明我具备了独立完成具身智能完整项目的能力。'},
 ];
 
 // Build project-to-node index
@@ -328,27 +328,32 @@ function renderProjects() {
   if (!grid) return;
   let filtered = PROJECTS;
   if (activeProjectFilter === 'all') filtered = PROJECTS;
+  else if (activeProjectFilter === 'phase-1') filtered = PROJECTS.filter(p => p.phase === 'phase-1');
+  else if (activeProjectFilter === 'phase-2') filtered = PROJECTS.filter(p => p.phase === 'phase-2');
+  else if (activeProjectFilter === 'phase-3') filtered = PROJECTS.filter(p => p.phase === 'phase-3');
   else if (activeProjectFilter === 'done') filtered = PROJECTS.filter(p => p.status === 'done');
-  else filtered = PROJECTS.filter(p => p.difficulty === activeProjectFilter);
 
   const diffColors = {'T1-T2':'var(--green)','T2-T3':'var(--teal)','T3':'var(--accent)','T3-T4':'var(--orange)','T4':'var(--orange)','T4-T5':'var(--purple)','T5':'var(--red)'};
   const diffLabels = {'T1-T2':'入门-基础','T2-T3':'基础-进阶','T3':'进阶','T3-T4':'进阶-专家','T4':'专家','T4-T5':'专家-大师','T5':'大师'};
+  const phaseLabels = {'phase-1':'🔴 阶段一·必须做','phase-2':'🟡 阶段二·强烈建议','phase-3':'🟢 阶段三·可选加分','phase-0':''};
 
   grid.innerHTML = filtered.map(p => `
     <div class="job-card" id="proj-${p.id}">
+      ${p.phase && p.phase !== 'phase-0' ? `<div style="font-size:.68rem;font-weight:700;color:${p.phase==='phase-1'?'var(--red)':p.phase==='phase-2'?'var(--orange)':'var(--green)'};margin-bottom:8px">${phaseLabels[p.phase]}</div>` : ''}
       <div class="jc-header">
         <div class="jc-company">
           <span style="font-size:1.2rem;margin-right:4px">${p.icon}</span>
           <span style="font-weight:600;color:${diffColors[p.difficulty]||'var(--muted)'}">${diffLabels[p.difficulty]||p.difficulty}</span>
-          ${p.status==='done'?'<span style="color:var(--green);margin-left:4px">✅</span>':'<span style="color:var(--muted);margin-left:4px">⏳ 待完成</span>'}
+          ${p.status==='done'?'<span style="color:var(--green);margin-left:4px">✅ 已有基础</span>':'<span style="color:var(--muted);margin-left:4px">⏳ 待完成</span>'}
         </div>
       </div>
       <div class="jc-title">${p.title}</div>
-      <div class="jc-jd">${p.desc}</div>
+      <div class="jc-jd" style="-webkit-line-clamp:unset">${p.desc}</div>
       <div style="margin:8px 0;padding:8px 10px;background:rgba(9,105,218,.04);border-radius:6px;font-size:.7rem;color:var(--muted);line-height:1.6">
-        <strong style="color:var(--text)">📝 关键步骤：</strong><br>
+        <strong style="color:var(--text)">📝 具体步骤：</strong><br>
         ${p.steps.map((s,i) => `<span style="color:var(--muted)">${i+1}.</span> ${s}`).join('<br>')}
       </div>
+      ${p.interview ? `<div style="margin:8px 0;padding:8px 10px;background:rgba(45,164,78,.04);border-left:2px solid var(--green);border-radius:0 6px 6px 0;font-size:.7rem;color:var(--muted);line-height:1.6"><strong style="color:var(--green)">💬 面试时怎么讲：</strong><br>"${p.interview}"</div>` : ''}
       <div class="jc-ref-skills">
         ${p.nodes.map(nid => {
           const node = NODES.find(n => n.id === nid);
@@ -361,7 +366,6 @@ function renderProjects() {
 
 function scrollToNode(nodeId) {
   document.getElementById('view-tree').style.display = 'block';
-  // Scroll the tree into view
   const tree = document.getElementById('tree');
   if (tree) tree.scrollIntoView({behavior:'smooth'});
 }
