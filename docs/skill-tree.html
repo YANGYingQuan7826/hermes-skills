@@ -114,6 +114,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 <div class="tabs">
   <button class="tab-btn active" onclick="switchTab('tree')" id="tab-tree">🌳 技能树</button>
   <button class="tab-btn" onclick="switchTab('recruit')" id="tab-recruit">💼 招聘岗位 (14)</button>
+  <button class="tab-btn" onclick="switchTab('projects')" id="tab-projects">📋 项目路径 (9)</button>
 </div>
 
 <!-- SKILL TREE VIEW -->
@@ -170,6 +171,38 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   </div>
 
   <div class="job-grid" id="jobGrid"></div>
+</div>
+
+<!-- PROJECT PATH VIEW -->
+<div id="view-projects" class="recruit-panel">
+  <div class="recruit-intro">
+    <div>
+      <h2>📋 项目驱动的学习路径</h2>
+      <span class="source-tag">9 个递进项目 × 50 个技能节点 = 从入门到行业认可</span>
+    </div>
+    <button class="tab-btn" style="font-size:.78rem;padding:6px 14px" onclick="switchTab('tree')">← 返回技能树</button>
+  </div>
+
+  <div class="alert-banner" style="background:rgba(88,166,255,.1);border-color:rgba(88,166,255,.3);color:var(--accent)">
+    💡 <strong>按难度递进排列</strong> | 点击项目卡片的技能标签可跳转到技能树 | 已有基础的项目标为 ✅
+  </div>
+
+  <div class="recruit-stats">
+    <div class="recruit-stat"><div class="rs-num">9</div><div class="rs-label">递进项目</div></div>
+    <div class="recruit-stat"><div class="rs-num">1</div><div class="rs-label" style="color:var(--green)">已有基础</div></div>
+    <div class="recruit-stat"><div class="rs-num">50</div><div class="rs-label">覆盖技能节点</div></div>
+    <div class="recruit-stat"><div class="rs-num">5</div><div class="rs-label">难度层级</div></div>
+  </div>
+
+  <div class="recruit-filter">
+    <button class="active" onclick="filterProjects('all',this)">全部</button>
+    <button onclick="filterProjects('T1-T2',this)">⭐ 入门-基础</button>
+    <button onclick="filterProjects('T3',this)">🔥 进阶</button>
+    <button onclick="filterProjects('T4-T5',this)">🚀 专家-大师</button>
+    <button onclick="filterProjects('done',this)">✅ 已有基础</button>
+  </div>
+
+  <div class="job-grid" id="projectGrid"></div>
 </div>
 
 <script>
@@ -265,7 +298,73 @@ const JOBS = [
   {id:'fourier-007',company:'傅利叶智能 (Fourier Intelligence)',short:'傅利叶智能',title:'新媒体运营实习生',location:'上海',type:'实习',url:'https://app.mokahr.com/campus-recruitment/fftai/147078',jd:'负责傅利叶雇主品牌视频内容策划、拍摄与运营。',skills:['内容运营','视频制作'],nodes:[]},
 ];
 
-// Build node-to-jobs index
+// ==================== PROJECT DATA ====================
+const PROJECTS = [
+  {id:'proj-1',icon:'🦾',title:'六自由度机械臂建模与仿真',difficulty:'T1-T2',status:'done',desc:'你已有的6-DOF项目。用DH参数建立运动学模型，实现正/逆运动学求解，在MATLAB/Python中可视化工作空间。这是操作分支的起点。',nodes:['c3','f7','m1','f1'],steps:['建立DH参数表','正运动学求解','逆运动学（几何法或数值法）','工作空间可视化','轨迹规划（关节空间）']},
+  {id:'proj-2',icon:'🐍',title:'Python机器人工具链搭建',difficulty:'T1-T2',status:'todo',desc:'搭建完整的Python机器人开发环境：PyTorch + NumPy + Matplotlib + Jupyter。用Python实现简单的路径规划算法(RRT)和运动控制仿真。',nodes:['f1','f4','f8','m1'],steps:['安装配置开发环境','NumPy矩阵运算实践','Matplotlib 3D可视化','实现RRT路径规划','编写可复用工具函数库']},
+  {id:'proj-3',icon:'🎮',title:'MuJoCo人形机器人行走',difficulty:'T3',status:'todo',desc:'在MuJoCo中加载人形机器人模型，用PPO/SAC训练行走策略。设计奖励函数（速度、稳定性、能耗），理解RL训练的完整pipeline。这是控制分支的核心项目。',nodes:['c1','c2','c4','f4','f7'],steps:['安装MuJoCo+环境搭建','加载人形机器人模型','设计状态空间/动作空间','编写PPO训练代码','奖励函数设计与调优','训练曲线分析与可视化']},
+  {id:'proj-4',icon:'👀',title:'YOLO+OpenCV目标检测与抓取点定位',difficulty:'T2-T3',status:'todo',desc:'用YOLO检测桌面物体，结合深度相机计算6D位姿，生成抓取点(GraspNet思路)。将检测结果可视化并输出抓取坐标。感知+操作的基础衔接项目。',nodes:['p1','p3','p2','m2','f4'],steps:['YOLO模型部署与推理','深度相机点云获取','物体6D位姿估计','抓取点生成算法','ROS2节点可视化']},
+  {id:'proj-5',icon:'🌉',title:'Sim-to-Real 迁移实验',difficulty:'T3-T4',status:'todo',desc:'在仿真中训练好的行走策略部署到真实机器人（可用宇树Go2或类似平台）。实现Domain Randomization、系统辨识，分析并缩小sim-real gap。控制分支的高阶项目。',nodes:['c5','c9','c4','c1','f5'],steps:['仿真策略导出','Domain Randomization实现','真机通信接口开发','部署与调试','Sim-Real Gap量化分析']},
+  {id:'proj-6',icon:'🚀',title:'OpenVLA 微调与部署',difficulty:'T4',status:'todo',desc:'在OpenVLA开源模型上微调自定义操作任务。准备演示数据集，进行LoRA微调，部署到推理服务器。这是感知分支最直接通往招聘要求的项目。',nodes:['p6','p4','p5','f4','f5'],steps:['OpenVLA模型下载与理解','收集/标注操作演示数据','LoRA微调训练','推理服务器部署','真机闭环测试']},
+  {id:'proj-7',icon:'🤖',title:'ROS2机器人导航系统',difficulty:'T3',status:'todo',desc:'用ROS2搭建完整的机器人导航pipeline：SLAM建图 → 全局路径规划 → 局部避障 → 自主导航。集成真实传感器(激光雷达/深度相机)。基础能力分支的集大成项目。',nodes:['f6','f5','f3','m1'],steps:['ROS2环境搭建','SLAM建图(Gmapping/Cartographer)','全局路径规划(Nav2)','传感器驱动集成','自主导航Demo']},
+  {id:'proj-8',icon:'🏃',title:'全身控制(WBC)算法实践',difficulty:'T4-T5',status:'todo',desc:'在人形机器人仿真模型上实现Whole-Body Control：协调双臂+双腿+躯干完成复杂运动（如拿取物体同时保持平衡）。复现论文中的WBC方法。控制分支的大师级项目。',nodes:['c8','c6','c4','c3','c9'],steps:['WBC理论梳理(QP优化框架)','任务优先级设计','QP求解器集成','仿真验证(多种运动模式)','性能分析与优化']},
+  {id:'proj-9',icon:'🏆',title:'端到端感知-控制闭环系统',difficulty:'T5',status:'todo',desc:'VLA模型驱动机器人完成真实拾取-放置任务。从RGB图像输入→VLA推理→动作输出→真机执行。这是技能树的终极目标，直接对应智元/傅利叶招聘核心要求。',nodes:['p10','p6','p7','c12','c9','m10'],steps:['VLA模型选型与部署','感知-控制接口开发','真机通信与安全机制','多轮任务测试','系统性能分析与报告']}
+];
+
+// Build project-to-node index
+const projNodeIdx = {};
+PROJECTS.forEach(p => { p.nodes.forEach(nid => { if(!projNodeIdx[nid]) projNodeIdx[nid]=[]; projNodeIdx[nid].push(p.id); }); });
+
+// Projects rendering
+let activeProjectFilter = 'all';
+function filterProjects(filter, btn) {
+  activeProjectFilter = filter;
+  document.querySelectorAll('#view-projects .recruit-filter button').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderProjects();
+}
+function renderProjects() {
+  const grid = document.getElementById('projectGrid');
+  if (!grid) return;
+  let filtered = PROJECTS;
+  if (activeProjectFilter === 'all') filtered = PROJECTS;
+  else if (activeProjectFilter === 'done') filtered = PROJECTS.filter(p => p.status === 'done');
+  else filtered = PROJECTS.filter(p => p.difficulty === activeProjectFilter);
+
+  const diffColors = {'T1-T2':'var(--green)','T2-T3':'var(--teal)','T3':'var(--accent)','T3-T4':'var(--orange)','T4':'var(--orange)','T4-T5':'var(--purple)','T5':'var(--red)'};
+  const diffLabels = {'T1-T2':'入门-基础','T2-T3':'基础-进阶','T3':'进阶','T3-T4':'进阶-专家','T4':'专家','T4-T5':'专家-大师','T5':'大师'};
+
+  grid.innerHTML = filtered.map(p => `
+    <div class="job-card" id="proj-${p.id}">
+      <div class="jc-header">
+        <div class="jc-company">
+          <span style="font-size:1.2rem;margin-right:4px">${p.icon}</span>
+          <span style="font-weight:600;color:${diffColors[p.difficulty]||'var(--muted)'}">${diffLabels[p.difficulty]||p.difficulty}</span>
+          ${p.status==='done'?'<span style="color:var(--green);margin-left:4px">✅</span>':'<span style="color:var(--muted);margin-left:4px">⏳ 待完成</span>'}
+        </div>
+      </div>
+      <div class="jc-title">${p.title}</div>
+      <div class="jc-jd">${p.desc}</div>
+      <div style="margin:8px 0;padding:8px 10px;background:rgba(88,166,255,.05);border-radius:6px;font-size:.7rem;color:var(--muted);line-height:1.6">
+        <strong style="color:var(--text)">📝 关键步骤：</strong><br>
+        ${p.steps.map((s,i) => `<span style="color:var(--muted)">${i+1}.</span> ${s}`).join('<br>')}
+      </div>
+      <div class="jc-ref-skills">
+        ${p.nodes.map(nid => {
+          const node = NODES.find(n => n.id === nid);
+          return node ? `<span class="jc-ref-skill" onclick="switchTab('tree');setTimeout(()=>scrollToNode('${nid}'),300)">🌳 ${node.name}</span>` : '';
+        }).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function scrollToNode(nodeId) {
+  document.getElementById('view-tree').style.display = 'block';
+  // Scroll the tree into view
+  const tree = document.getElementById('tree');
+  if (tree) tree.scrollIntoView({behavior:'smooth'});
+}
 const nodeToJobs = {};
 NODES.forEach(n => { nodeToJobs[n.id] = []; });
 JOBS.forEach(j => {
@@ -496,15 +595,19 @@ function highlightNode(nodeId) {
 function switchTab(tab) {
   document.getElementById('view-tree').style.display = tab === 'tree' ? 'block' : 'none';
   document.getElementById('view-recruit').classList.toggle('active', tab === 'recruit');
+  document.getElementById('view-projects').classList.toggle('active', tab === 'projects');
   document.getElementById('tab-tree').classList.toggle('active', tab === 'tree');
   document.getElementById('tab-recruit').classList.toggle('active', tab === 'recruit');
+  document.getElementById('tab-projects').classList.toggle('active', tab === 'projects');
   if (tab === 'recruit') renderJobs();
+  if (tab === 'projects') renderProjects();
 }
 
 // ==================== INIT ====================
 loadState();
 renderTree();
 renderJobs();
+renderProjects();
 </script>
 </body>
 </html>
