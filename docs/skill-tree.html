@@ -6,12 +6,12 @@
 <title>🤖 机器人行业技能树 × 真实招聘</title>
 <style>
 :root {
-  --bg: #0d1117; --card: #161b22; --border: #30363d;
-  --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
-  --green: #3fb950; --orange: #d2991d; --red: #f85149;
-  --purple: #a371f7; --teal: #39d353;
-  --foundation: #58a6ff; --control: #f0883e; --perception: #a371f7;
-  --manipulation: #3fb950; --product: #f85149;
+  --bg: #ffffff; --card: #f6f8fa; --border: #d0d7de;
+  --text: #24292f; --muted: #57606a; --accent: #0969da;
+  --green: #2da44e; --orange: #bf8700; --red: #cf222e;
+  --purple: #8250df; --teal: #1a7f37;
+  --foundation: #0969da; --control: #bf8700; --perception: #8250df;
+  --manipulation: #2da44e; --product: #cf222e;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;overflow-x:hidden}
@@ -35,27 +35,27 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .main{padding:24px;overflow-x:auto}
 .tree{display:grid;grid-template-columns:repeat(5,1fr);gap:16px 20px;min-width:1100px;max-width:1400px;margin:0 auto}
 .branch-header{grid-column:span 1;text-align:center;padding:12px 8px;font-weight:600;font-size:.95rem;border-radius:6px;position:sticky;top:60px;z-index:10}
-.bh-foundation{background:rgba(88,166,255,.12);color:var(--foundation)}
-.bh-control{background:rgba(240,136,62,.12);color:var(--control)}
-.bh-perception{background:rgba(163,113,247,.12);color:var(--purple)}
-.bh-manipulation{background:rgba(63,185,80,.12);color:var(--manipulation)}
-.bh-product{background:rgba(248,81,73,.12);color:var(--product)}
+.bh-foundation{background:rgba(9,105,218,.08);color:var(--foundation)}
+.bh-control{background:rgba(191,135,0,.08);color:var(--control)}
+.bh-perception{background:rgba(130,80,223,.08);color:var(--purple)}
+.bh-manipulation{background:rgba(45,164,78,.08);color:var(--manipulation)}
+.bh-product{background:rgba(207,34,46,.08);color:var(--product)}
 .tier-label{grid-column:span 5;text-align:center;font-size:.8rem;color:var(--muted);padding:8px 0;border-top:1px solid var(--border);font-weight:500}
 .node{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 12px;transition:all .2s;cursor:pointer}
-.node:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.3)}
-.node.completed{background:rgba(63,185,80,.08);border-color:var(--green)}
+.node:hover{transform:translateY(-2px);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.node.completed{background:rgba(45,164,78,.06);border-color:var(--green)}
 .node.completed .name{color:var(--green)}
-.node.locked{opacity:.45;cursor:not-allowed;filter:grayscale(60%)}
+.node.locked{opacity:.5;cursor:not-allowed;filter:none;background:#f0f0f0}
 .node.locked:hover{transform:none;box-shadow:none}
-.node.highlight{border-color:var(--accent);box-shadow:0 0 0 2px rgba(88,166,255,.3);animation:pulse 1.2s ease-in-out}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 2px rgba(88,166,255,.3)}50%{box-shadow:0 0 0 6px rgba(88,166,255,.1)}}
+.node.highlight{border-color:var(--accent);box-shadow:0 0 0 2px rgba(9,105,218,.2);animation:pulse 1.2s ease-in-out}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 2px rgba(9,105,218,.2)}50%{box-shadow:0 0 0 6px rgba(9,105,218,.08)}}
 .node .tier{font-size:.65rem;font-weight:700;margin-bottom:2px}
 .node .icon{font-size:1.4rem;margin-bottom:4px}
 .node .name{font-size:.8rem;font-weight:600;margin-bottom:4px;line-height:1.2}
 .node .why{font-size:.65rem;color:var(--muted);line-height:1.3;margin-bottom:4px}
 .node .tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:2px}
-.node .tag{font-size:.6rem;padding:1px 6px;border-radius:10px;background:rgba(88,166,255,.15);color:var(--accent)}
-.node .tag.company{background:rgba(240,136,62,.15);color:var(--orange)}
+.node .tag{font-size:.6rem;padding:1px 6px;border-radius:10px;background:rgba(9,105,218,.1);color:var(--accent)}
+.node .tag.company{background:rgba(191,135,0,.1);color:var(--orange)}
 .node .prereq{font-size:.6rem;color:var(--muted);margin-top:2px}
 
 /* ===== RECRUITMENT PANEL ===== */
@@ -66,11 +66,11 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .recruit-intro .source-tag{font-size:.75rem;color:var(--muted);background:var(--card);padding:4px 12px;border-radius:12px;border:1px solid var(--border)}
 .recruit-filter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
 .recruit-filter button{padding:6px 14px;border:1px solid var(--border);border-radius:16px;background:var(--card);color:var(--muted);font-size:.78rem;cursor:pointer;transition:all .2s}
-.recruit-filter button:hover,.recruit-filter button.active{color:var(--accent);border-color:var(--accent);background:rgba(88,166,255,.1)}
+.recruit-filter button:hover,.recruit-filter button.active{color:var(--accent);border-color:var(--accent);background:rgba(9,105,218,.08)}
 .job-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:16px}
 .job-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;transition:all .2s;cursor:pointer}
-.job-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.3)}
-.job-card.highlight{border-color:var(--accent);box-shadow:0 0 0 2px rgba(88,166,255,.3)}
+.job-card:hover{transform:translateY(-2px);box-shadow:0 2px 12px rgba(0,0,0,.1)}
+.job-card.highlight{border-color:var(--accent);box-shadow:0 0 0 2px rgba(9,105,218,.2)}
 .job-card .jc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
 .job-card .jc-company{font-size:.75rem;color:var(--muted)}
 .job-card .jc-company .co-name{color:var(--orange);font-weight:600}
@@ -79,20 +79,20 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .job-card .jc-meta span{display:flex;align-items:center;gap:4px}
 .job-card .jc-jd{font-size:.75rem;color:var(--muted);line-height:1.5;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 .job-card .jc-skills{display:flex;gap:4px;flex-wrap:wrap}
-.job-card .jc-skill{padding:2px 8px;border-radius:10px;font-size:.65rem;background:rgba(88,166,255,.12);color:var(--accent)}
+.job-card .jc-skill{padding:2px 8px;border-radius:10px;font-size:.65rem;background:rgba(9,105,218,.08);color:var(--accent)}
 .job-card .jc-skill.linked{cursor:pointer;text-decoration:underline}
-.job-card .jc-skill.linked:hover{background:rgba(88,166,255,.25)}
+.job-card .jc-skill.linked:hover{background:rgba(9,105,218,.15)}
 .job-card .jc-link{display:inline-block;margin-top:8px;font-size:.7rem;color:var(--accent);text-decoration:none}
 .job-card .jc-link:hover{text-decoration:underline}
 
 /* Alert banner */
-.alert-banner{background:rgba(240,136,62,.1);border:1px solid rgba(240,136,62,.3);border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:.8rem;color:var(--orange);display:flex;align-items:center;gap:8px}
+.alert-banner{background:rgba(191,135,0,.06);border:1px solid rgba(191,135,0,.2);border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:.8rem;color:var(--orange);display:flex;align-items:center;gap:8px}
 .alert-banner strong{color:var(--text)}
 
 /* Skill reference on cards */
 .job-card .jc-ref-skills{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:8px}
-.job-card .jc-ref-skill{font-size:.6rem;padding:1px 6px;border-radius:8px;background:rgba(63,185,80,.12);color:var(--green);cursor:pointer}
-.job-card .jc-ref-skill:hover{background:rgba(63,185,80,.25)}
+.jc-ref-skill{font-size:.6rem;padding:1px 6px;border-radius:8px;background:rgba(45,164,78,.08);color:var(--green);cursor:pointer}
+.jc-ref-skill:hover{background:rgba(45,164,78,.15)}
 
 /* Stats bar */
 .recruit-stats{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px}
@@ -183,7 +183,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     <button class="tab-btn" style="font-size:.78rem;padding:6px 14px" onclick="switchTab('tree')">← 返回技能树</button>
   </div>
 
-  <div class="alert-banner" style="background:rgba(88,166,255,.1);border-color:rgba(88,166,255,.3);color:var(--accent)">
+  <div class="alert-banner" style="background:rgba(9,105,218,.05);border-color:rgba(9,105,218,.2);color:var(--accent)">
     💡 <strong>按难度递进排列</strong> | 点击项目卡片的技能标签可跳转到技能树 | 已有基础的项目标为 ✅
   </div>
 
@@ -345,7 +345,7 @@ function renderProjects() {
       </div>
       <div class="jc-title">${p.title}</div>
       <div class="jc-jd">${p.desc}</div>
-      <div style="margin:8px 0;padding:8px 10px;background:rgba(88,166,255,.05);border-radius:6px;font-size:.7rem;color:var(--muted);line-height:1.6">
+      <div style="margin:8px 0;padding:8px 10px;background:rgba(9,105,218,.04);border-radius:6px;font-size:.7rem;color:var(--muted);line-height:1.6">
         <strong style="color:var(--text)">📝 关键步骤：</strong><br>
         ${p.steps.map((s,i) => `<span style="color:var(--muted)">${i+1}.</span> ${s}`).join('<br>')}
       </div>
