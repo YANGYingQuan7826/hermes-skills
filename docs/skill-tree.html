@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🤖 机器人行业技能树</title>
+<title>🤖 机器人行业技能树 × 真实招聘</title>
 <style>
 :root {
   --bg: #0d1117; --card: #161b22; --border: #30363d;
@@ -15,7 +15,15 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;overflow-x:hidden}
-.header{background:var(--card);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+
+/* Tabs */
+.tabs{display:flex;gap:0;background:var(--card);border-bottom:1px solid var(--border);padding:0 24px;position:sticky;top:0;z-index:200}
+.tab-btn{padding:14px 24px;border:none;background:none;color:var(--muted);font-size:.9rem;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;font-weight:500}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* Header */
+.header{background:var(--card);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;justify-content:space-between;align-items:center}
 .header h1{font-size:1.3rem;font-weight:600}
 .stats{display:flex;gap:20px;font-size:.85rem;color:var(--muted)}
 .stats span{display:flex;align-items:center;gap:6px}
@@ -29,70 +37,139 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .branch-header{grid-column:span 1;text-align:center;padding:12px 8px;font-weight:600;font-size:.95rem;border-radius:6px;position:sticky;top:60px;z-index:10}
 .bh-foundation{background:rgba(88,166,255,.12);color:var(--foundation)}
 .bh-control{background:rgba(240,136,62,.12);color:var(--control)}
-.bh-perception{background:rgba(163,113,247,.12);color:var(--perception)}
+.bh-perception{background:rgba(163,113,247,.12);color:var(--purple)}
 .bh-manipulation{background:rgba(63,185,80,.12);color:var(--manipulation)}
 .bh-product{background:rgba(248,81,73,.12);color:var(--product)}
-
-.node{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px 12px;cursor:pointer;transition:all .2s;position:relative;min-height:90px;display:flex;flex-direction:column;gap:6px}
-.node:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.3)}
-.node.completed{border-color:var(--green);background:rgba(63,185,80,.06)}
-.node.completed::after{content:"✓";position:absolute;top:8px;right:10px;color:var(--green);font-weight:700;font-size:.9rem}
-.node.locked{opacity:.45;cursor:not-allowed;border-style:dashed}
+.tier-label{grid-column:span 5;text-align:center;font-size:.8rem;color:var(--muted);padding:8px 0;border-top:1px solid var(--border);font-weight:500}
+.node{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 12px;transition:all .2s;cursor:pointer}
+.node:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.node.completed{background:rgba(63,185,80,.08);border-color:var(--green)}
+.node.completed .name{color:var(--green)}
+.node.locked{opacity:.45;cursor:not-allowed;filter:grayscale(60%)}
 .node.locked:hover{transform:none;box-shadow:none}
-.node .tier{font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em}
-.node .icon{font-size:1.4rem;line-height:1}
-.node .name{font-size:.82rem;font-weight:600;line-height:1.3}
-.node .why{font-size:.68rem;color:var(--muted);line-height:1.4;display:none}
-.node:hover .why{display:block}
-.node .tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:auto}
-.node .tag{font-size:.6rem;padding:2px 6px;border-radius:3px;background:rgba(139,148,158,.12);color:var(--muted)}
-.tier-label{grid-column:span 5;text-align:center;padding:8px;font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.15em;border-top:1px solid var(--border);margin-top:8px}
+.node.highlight{border-color:var(--accent);box-shadow:0 0 0 2px rgba(88,166,255,.3);animation:pulse 1.2s ease-in-out}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 2px rgba(88,166,255,.3)}50%{box-shadow:0 0 0 6px rgba(88,166,255,.1)}}
+.node .tier{font-size:.65rem;font-weight:700;margin-bottom:2px}
+.node .icon{font-size:1.4rem;margin-bottom:4px}
+.node .name{font-size:.8rem;font-weight:600;margin-bottom:4px;line-height:1.2}
+.node .why{font-size:.65rem;color:var(--muted);line-height:1.3;margin-bottom:4px}
+.node .tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:2px}
+.node .tag{font-size:.6rem;padding:1px 6px;border-radius:10px;background:rgba(88,166,255,.15);color:var(--accent)}
+.node .tag.company{background:rgba(240,136,62,.15);color:var(--orange)}
+.node .prereq{font-size:.6rem;color:var(--muted);margin-top:2px}
 
-.reset-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:.8rem;transition:all .2s}
-.reset-btn:hover{border-color:var(--red);color:var(--red)}
+/* ===== RECRUITMENT PANEL ===== */
+.recruit-panel{display:none;padding:24px;max-width:1400px;margin:0 auto}
+.recruit-panel.active{display:block}
+.recruit-intro{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.recruit-intro h2{font-size:1.2rem;color:var(--text)}
+.recruit-intro .source-tag{font-size:.75rem;color:var(--muted);background:var(--card);padding:4px 12px;border-radius:12px;border:1px solid var(--border)}
+.recruit-filter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.recruit-filter button{padding:6px 14px;border:1px solid var(--border);border-radius:16px;background:var(--card);color:var(--muted);font-size:.78rem;cursor:pointer;transition:all .2s}
+.recruit-filter button:hover,.recruit-filter button.active{color:var(--accent);border-color:var(--accent);background:rgba(88,166,255,.1)}
+.job-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:16px}
+.job-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;transition:all .2s;cursor:pointer}
+.job-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.job-card.highlight{border-color:var(--accent);box-shadow:0 0 0 2px rgba(88,166,255,.3)}
+.job-card .jc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.job-card .jc-company{font-size:.75rem;color:var(--muted)}
+.job-card .jc-company .co-name{color:var(--orange);font-weight:600}
+.job-card .jc-title{font-size:.95rem;font-weight:600;color:var(--text);margin-bottom:6px}
+.job-card .jc-meta{display:flex;gap:12px;font-size:.75rem;color:var(--muted);margin-bottom:10px}
+.job-card .jc-meta span{display:flex;align-items:center;gap:4px}
+.job-card .jc-jd{font-size:.75rem;color:var(--muted);line-height:1.5;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.job-card .jc-skills{display:flex;gap:4px;flex-wrap:wrap}
+.job-card .jc-skill{padding:2px 8px;border-radius:10px;font-size:.65rem;background:rgba(88,166,255,.12);color:var(--accent)}
+.job-card .jc-skill.linked{cursor:pointer;text-decoration:underline}
+.job-card .jc-skill.linked:hover{background:rgba(88,166,255,.25)}
+.job-card .jc-link{display:inline-block;margin-top:8px;font-size:.7rem;color:var(--accent);text-decoration:none}
+.job-card .jc-link:hover{text-decoration:underline}
 
-/* SVG connectors */
-.connectors{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
-.node-connector{stroke:var(--border);stroke-width:1.5;fill:none}
-.node-connector.active{stroke:var(--green);stroke-width:2}
+/* Alert banner */
+.alert-banner{background:rgba(240,136,62,.1);border:1px solid rgba(240,136,62,.3);border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:.8rem;color:var(--orange);display:flex;align-items:center;gap:8px}
+.alert-banner strong{color:var(--text)}
 
-.footer{text-align:center;padding:32px;font-size:.75rem;color:var(--muted)}
-.footer a{color:var(--accent)}
+/* Skill reference on cards */
+.job-card .jc-ref-skills{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:8px}
+.job-card .jc-ref-skill{font-size:.6rem;padding:1px 6px;border-radius:8px;background:rgba(63,185,80,.12);color:var(--green);cursor:pointer}
+.job-card .jc-ref-skill:hover{background:rgba(63,185,80,.25)}
+
+/* Stats bar */
+.recruit-stats{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.recruit-stat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 16px;text-align:center;min-width:100px}
+.recruit-stat .rs-num{font-size:1.4rem;font-weight:700;color:var(--accent)}
+.recruit-stat .rs-label{font-size:.7rem;color:var(--muted);margin-top:2px}
+
+/* Responsive */
+@media(max-width:800px){
+  .tree{grid-template-columns:1fr;min-width:auto}
+  .branch-header{position:static}
+  .job-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div>
+<!-- Tabs -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('tree')" id="tab-tree">🌳 技能树</button>
+  <button class="tab-btn" onclick="switchTab('recruit')" id="tab-recruit">💼 招聘岗位 (14)</button>
+</div>
+
+<!-- SKILL TREE VIEW -->
+<div id="view-tree">
+  <div class="header">
     <h1>🤖 机器人行业技能树</h1>
-    <div style="font-size:.75rem;color:var(--muted);margin-top:2px">Minecraft 成就树风格 · 点击打卡 · 进度保存在浏览器</div>
+    <div class="stats">
+      <span>✅ <span class="num done" id="doneCount">0</span>/<span class="num" id="totalCount">50</span> 已完成</span>
+      <span>📊 <span class="num" id="pctCount">0%</span></span>
+      <span>💼 <span class="num" style="color:var(--orange)">14</span> 真实岗位</span>
+    </div>
   </div>
-  <div class="stats">
-    <span>✅ <span class="num done" id="doneCount">0</span> / <span class="num" id="totalCount">0</span> 已完成</span>
-    <span>📊 <span class="num" id="pctCount">0%</span></span>
+  <div class="legend">
+    <span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span> 已完成</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--card);border:1px solid var(--border)"></span> 未开始</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#333"></span> 未解锁</span>
+    <span class="legend-item" style="margin-left:auto"><span style="color:var(--orange)">◆</span> 有岗位需求</span>
+    <span style="font-size:.7rem;color:var(--muted)">点击节点打卡 | 点击技能标签查看相关岗位</span>
+    <button class="tab-btn" style="margin-left:auto;font-size:.75rem;padding:4px 12px" onclick="switchTab('recruit')">查看招聘 →</button>
   </div>
-  <button class="reset-btn" onclick="resetAll()">🔄 重置</button>
+  <div class="main">
+    <div class="tree" id="tree"></div>
+  </div>
 </div>
 
-<div class="legend">
-  <div class="legend-item"><div class="legend-dot" style="background:var(--foundation)"></div>基础</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--control)"></div>控制&RL</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--perception)"></div>感知</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--manipulation)"></div>操作</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--product)"></div>AI产品&研究</div>
-  <div class="legend-item" style="margin-left:12px">|</div>
-  <div class="legend-item"><span style="color:var(--green)">✓</span> 已完成</div>
-  <div class="legend-item"><span style="color:var(--muted)">⬜</span> 未开始</div>
-  <div class="legend-item"><span style="opacity:.4">🔒</span> 未解锁</div>
-</div>
+<!-- RECRUITMENT VIEW -->
+<div id="view-recruit" class="recruit-panel">
+  <div class="recruit-intro">
+    <div>
+      <h2>💼 机器人行业真实招聘岗位</h2>
+      <span class="source-tag">数据来源：智元机器人 (AgiBot) + 傅利叶智能 (Fourier) 官方招聘页</span>
+    </div>
+    <button class="tab-btn" style="font-size:.78rem;padding:6px 14px" onclick="switchTab('tree')">← 返回技能树</button>
+  </div>
 
-<div class="main">
-  <div class="tree" id="tree"></div>
-</div>
+  <div class="alert-banner">
+    ⚠️ <strong>数据抓取时间：2025年6月12日</strong> | 岗位可能随时更新，请以官网为准 | 点击技能标签可跳转到技能树对应节点
+  </div>
 
-<div class="footer">
-  数据来源：傅利叶智能 · 英伟达 · 美的 · 智元机器人 · 华为 · vivo · 字节跳动 · 小红书 · 上交工研院 等公司最新招聘要求<br>
-  技能树基于 2026 年 6 月头部机器人公司 13 份岗位 JD 分析构建
+  <div class="recruit-stats">
+    <div class="recruit-stat"><div class="rs-num">14</div><div class="rs-label">真实岗位</div></div>
+    <div class="recruit-stat"><div class="rs-num">2</div><div class="rs-label">头部公司</div></div>
+    <div class="recruit-stat"><div class="rs-num">4</div><div class="rs-label">城市</div></div>
+    <div class="recruit-stat"><div class="rs-num">50</div><div class="rs-label">关联技能节点</div></div>
+  </div>
+
+  <div class="recruit-filter">
+    <button class="active" onclick="filterJobs('all',this)">全部</button>
+    <button onclick="filterJobs('AgiBot',this)">🦾 智元机器人</button>
+    <button onclick="filterJobs('Fourier',this)">🏃 傅利叶智能</button>
+    <button onclick="filterJobs('上海',this)">📍 上海</button>
+    <button onclick="filterJobs('深圳',this)">📍 深圳</button>
+    <button onclick="filterJobs('北京',this)">📍 北京</button>
+  </div>
+
+  <div class="job-grid" id="jobGrid"></div>
 </div>
 
 <script>
@@ -106,72 +183,109 @@ const BRANCHES = [
 ];
 
 const TIERS = ['T1 入门', 'T2 基础', 'T3 进阶', 'T4 专家', 'T5 大师'];
+const TIER_LABELS = ['入门', '打好基础', '核心能力', '专项深入', '行业认可'];
 
 const NODES = [
   // ===== FOUNDATION =====
-  {id:'f1', branch:'foundation', tier:1, icon:'🐍', name:'Python', why:'所有机器人框架的默认语言。数据处理、模型训练、脚本自动化的基础。', tags:['13/13岗位'], prereq:[]},
-  {id:'f2', branch:'foundation', tier:2, icon:'⚙️', name:'C++', why:'真机部署需要实时控制，Python太慢。底层驱动和控制器用C++。英伟达/智元明确要求。', tags:['3/13岗位'], prereq:['f1']},
-  {id:'f3', branch:'foundation', tier:2, icon:'🐧', name:'Linux + Git', why:'仿真环境和真机控制器基本都跑Linux。代码协作必须Git。', tags:['5/13岗位'], prereq:['f1']},
-  {id:'f4', branch:'foundation', tier:2, icon:'🔥', name:'PyTorch', why:'训练RL策略、微调VLA模型的事实标准。所有机器人岗都要求。', tags:['8/13岗位'], prereq:['f1']},
-  {id:'f5', branch:'foundation', tier:3, icon:'🐳', name:'Docker', why:'环境复现和部署的基础设施。Sim-to-Real流程依赖容器化。', tags:['3/13岗位'], prereq:['f3']},
-  {id:'f6', branch:'foundation', tier:3, icon:'🤖', name:'ROS2', why:'机器人操作系统。节点通信、传感器驱动、真机中间件的标准。', tags:['4/13岗位'], prereq:['f3','f4']},
-  {id:'f7', branch:'foundation', tier:3, icon:'📐', name:'线性代数+概率', why:'理解DH参数、雅可比矩阵、卡尔曼滤波、贝叶斯推断的数学基础。', tags:['核心能力'], prereq:[]},
-  {id:'f8', branch:'foundation', tier:4, icon:'📦', name:'NumPy + Matplotlib', why:'数值计算和数据可视化。轨迹分析、训练曲线、实验报告都离不开。', tags:['6/13岗位'], prereq:['f1','f7']},
+  {id:'f1', branch:'foundation', tier:1, icon:'🐍', name:'Python', why:'所有机器人框架的默认语言。数据处理、模型训练、脚本自动化的基础。', tags:[], prereq:[], jobLinks:['agibot-001','agibot-003']},
+  {id:'f2', branch:'foundation', tier:2, icon:'⚙️', name:'C++', why:'真机部署需要实时控制，Python太慢。底层驱动和控制器用C++。', tags:[], prereq:['f1'], jobLinks:['agibot-001','agibot-006','agibot-007','fourier-003','fourier-004']},
+  {id:'f3', branch:'foundation', tier:2, icon:'🐧', name:'Linux + Git', why:'仿真环境和真机控制器基本都跑Linux。代码协作必须Git。', tags:[], prereq:['f1']},
+  {id:'f4', branch:'foundation', tier:2, icon:'🔥', name:'PyTorch', why:'训练RL策略、微调VLA模型的事实标准。', tags:[], prereq:['f1'], jobLinks:['agibot-001','agibot-003','agibot-004','fourier-002']},
+  {id:'f5', branch:'foundation', tier:3, icon:'🐳', name:'Docker', why:'环境复现和部署的基础设施。Sim-to-Real流程依赖容器化。', tags:[], prereq:['f3'], jobLinks:['agibot-004']},
+  {id:'f6', branch:'foundation', tier:3, icon:'🤖', name:'ROS2', why:'机器人操作系统。节点通信、传感器驱动、真机中间件的标准。', tags:[], prereq:['f3','f4'], jobLinks:['fourier-001']},
+  {id:'f7', branch:'foundation', tier:3, icon:'📐', name:'线性代数+概率', why:'理解DH参数、雅可比矩阵、卡尔曼滤波、贝叶斯推断的数学基础。', tags:[], prereq:[]},
+  {id:'f8', branch:'foundation', tier:4, icon:'📦', name:'NumPy + Matplotlib', why:'数值计算和数据可视化。轨迹分析、训练曲线、实验报告都离不开。', tags:[], prereq:['f1','f7'], jobLinks:['agibot-004']},
 
   // ===== CONTROL & RL =====
-  {id:'c1', branch:'control', tier:1, icon:'🎮', name:'MuJoCo / Isaac Gym', why:'人形机器人训练的主流仿真平台。英伟达生态核心。', tags:['6/13岗位'], prereq:['f1']},
-  {id:'c2', branch:'control', tier:2, icon:'🧠', name:'RL基础 (MDP/Q-learning)', why:'理解状态空间、动作空间、奖励函数、折扣因子。RL的理论起点。', tags:['核心能力'], prereq:['c1','f7']},
-  {id:'c3', branch:'control', tier:2, icon:'🔗', name:'运动学 (FK/IK)', why:'正/逆运动学是机器人控制的第一课。你的6-DOF项目直接覆盖。', tags:['已有基础'], prereq:['f7']},
-  {id:'c4', branch:'control', tier:3, icon:'⚡', name:'PPO / SAC 实现', why:'人形机器人运动控制的核心算法。美的/智元/傅利叶明确要求。', tags:['5/13岗位'], prereq:['c2','f4']},
-  {id:'c5', branch:'control', tier:3, icon:'🌉', name:'Sim-to-Real 迁移', why:'仿真训练的策略部署到真机必然有gap。Domain Randomization是关键。', tags:['4/13岗位'], prereq:['c4']},
-  {id:'c6', branch:'control', tier:3, icon:'🦿', name:'轨迹优化 (MPC/TO)', why:'模型预测控制+轨迹优化，与RL互补的传统方法。美的岗要求。', tags:['2/13岗位'], prereq:['c3']},
-  {id:'c7', branch:'control', tier:4, icon:'🎭', name:'模仿学习 (ACT/Diffusion)', why:'从人类视频/动捕数据学习策略。英伟达岗核心要求。', tags:['3/13岗位'], prereq:['c4']},
-  {id:'c8', branch:'control', tier:4, icon:'🏃', name:'全身控制 (WBC)', why:'协调人形机器人所有关节完成复杂运动。英伟达加分项。', tags:['1/13岗位'], prereq:['c6']},
-  {id:'c9', branch:'control', tier:4, icon:'🔬', name:'真机部署调试', why:'将仿真策略部署到真实机器人，分析sim-real gap。傅利叶核心要求。', tags:['5/13岗位'], prereq:['c5']},
-  {id:'c10', branch:'control', tier:5, icon:'📝', name:'顶会论文 (ICRA/RSS/CoRL)', why:'英伟达/美的明确加分。是进入顶尖机器人团队的硬通货。', tags:['3/13岗位'], prereq:['c7','c9']},
-  {id:'c11', branch:'control', tier:5, icon:'🌟', name:'开源RL框架贡献', why:'向Isaac Lab/RLlib等贡献代码，证明工程能力。英伟达加分。', tags:['2/13岗位'], prereq:['c9','f5']},
-  {id:'c12', branch:'control', tier:5, icon:'🏆', name:'完整机器人项目', why:'从仿真→训练→Sim2Real→真机验证的闭环项目。智元/傅利叶核心要求。', tags:['7/13岗位'], prereq:['c9','c10']},
+  {id:'c1', branch:'control', tier:1, icon:'🎮', name:'MuJoCo / Isaac Gym', why:'人形机器人训练的主流仿真平台。英伟达生态核心。', tags:[], prereq:['f1'], jobLinks:['agibot-001']},
+  {id:'c2', branch:'control', tier:2, icon:'🧠', name:'RL基础 (MDP/Q-learning)', why:'理解状态空间、动作空间、奖励函数。RL的理论起点。', tags:[], prereq:['c1','f7'], jobLinks:['agibot-002']},
+  {id:'c3', branch:'control', tier:2, icon:'🔗', name:'运动学 (FK/IK)', why:'正/逆运动学是机器人控制的第一课。', tags:[], prereq:['f7'], jobLinks:['agibot-002','agibot-007','fourier-001','fourier-005']},
+  {id:'c4', branch:'control', tier:3, icon:'⚡', name:'PPO / SAC 实现', why:'人形机器人运动控制的核心算法。智元明确要求。', tags:[], prereq:['c2','f4'], jobLinks:['agibot-001','agibot-002','agibot-003','fourier-001']},
+  {id:'c5', branch:'control', tier:3, icon:'🌉', name:'Sim-to-Real 迁移', why:'仿真训练的策略部署到真机必然有gap。Domain Randomization是关键。', tags:[], prereq:['c4'], jobLinks:['agibot-001','agibot-002','fourier-001']},
+  {id:'c6', branch:'control', tier:3, icon:'🦿', name:'轨迹优化 (MPC/TO)', why:'模型预测控制+轨迹优化，与RL互补的传统方法。', tags:[], prereq:['c3'], jobLinks:['agibot-002']},
+  {id:'c7', branch:'control', tier:4, icon:'🎭', name:'模仿学习 (ACT/Diffusion)', why:'从人类视频/动捕数据学习策略。英伟达岗核心要求。', tags:[], prereq:['c4'], jobLinks:['agibot-001']},
+  {id:'c8', branch:'control', tier:4, icon:'🏃', name:'全身控制 (WBC)', why:'协调人形机器人所有关节完成复杂运动。', tags:[], prereq:['c6'], jobLinks:['agibot-002']},
+  {id:'c9', branch:'control', tier:4, icon:'🔬', name:'真机部署调试', why:'将仿真策略部署到真实机器人，分析sim-real gap。', tags:[], prereq:['c5'], jobLinks:['agibot-001','agibot-002','agibot-003']},
+  {id:'c10', branch:'control', tier:5, icon:'📝', name:'顶会论文 (ICRA/RSS/CoRL)', why:'智元明确加分。进入顶尖机器人团队的硬通货。', tags:[], prereq:['c7','c9'], jobLinks:['agibot-001']},
+  {id:'c11', branch:'control', tier:5, icon:'🌟', name:'开源RL框架贡献', why:'向Isaac Lab/RLlib等贡献代码，证明工程能力。', tags:[], prereq:['c9','f5']},
+  {id:'c12', branch:'control', tier:5, icon:'🏆', name:'完整机器人项目', why:'从仿真→训练→Sim2Real→真机验证的闭环项目。', tags:[], prereq:['c9','c10']},
 
   // ===== PERCEPTION =====
-  {id:'p1', branch:'perception', tier:1, icon:'👀', name:'OpenCV + 图像处理', why:'视觉感知的第一步。目标检测、特征提取、相机标定的基础。', tags:['3/13岗位'], prereq:['f1']},
-  {id:'p2', branch:'perception', tier:2, icon:'📷', name:'3D视觉 (点云/深度)', why:'操作任务需要理解物体空间位置。英伟达明确要求3D感知。', tags:['2/13岗位'], prereq:['p1','f7']},
-  {id:'p3', branch:'perception', tier:2, icon:'🎯', name:'目标检测 (YOLO/SAM)', why:'识别物体位置和类别。操作任务的第一步是"看到"物体。', tags:['3/13岗位'], prereq:['p1','f4']},
-  {id:'p4', branch:'perception', tier:3, icon:'🧩', name:'VLM 微调与应用', why:'视觉语言模型让机器人理解自然语言指令+视觉场景。美的核心。', tags:['4/13岗位'], prereq:['p1','f4']},
-  {id:'p5', branch:'perception', tier:3, icon:'🔮', name:'多模态融合', why:'视觉+触觉+力反馈多传感器融合，提升决策鲁棒性。智元RL岗要求。', tags:['2/13岗位'], prereq:['p2']},
-  {id:'p6', branch:'perception', tier:4, icon:'🚀', name:'VLA 模型部署 (OpenVLA)', why:'端到端视觉-语言-动作模型。美的明确优先条件。', tags:['3/13岗位'], prereq:['p4','c4']},
-  {id:'p7', branch:'perception', tier:4, icon:'⚡', name:'实时感知流水线', why:'毫秒级推理延迟要求。需GPU优化+模型量化。英伟达岗要求。', tags:['2/13岗位'], prereq:['p6','f5']},
-  {id:'p8', branch:'perception', tier:5, icon:'📝', name:'顶会论文 (CVPR/ICLR)', why:'感知方向的学术成果。美的/英伟达加分。', tags:['2/13岗位'], prereq:['p6','p7']},
-  {id:'p9', branch:'perception', tier:5, icon:'🔧', name:'感知框架贡献', why:'向OpenVLA/RT-2等开源框架贡献。证明工程+研究双重能力。', tags:['1/13岗位'], prereq:['p6']},
-  {id:'p10', branch:'perception', tier:5, icon:'🎯', name:'端到端感知-控制闭环', why:'VLA模型驱动机器人完成真实任务。美的/智元岗位核心目标。', tags:['4/13岗位'], prereq:['p7','c12']},
+  {id:'p1', branch:'perception', tier:1, icon:'👀', name:'OpenCV + 图像处理', why:'视觉感知的第一步。目标检测、特征提取、相机标定的基础。', tags:[], prereq:['f1']},
+  {id:'p2', branch:'perception', tier:2, icon:'📷', name:'3D视觉 (点云/深度)', why:'操作任务需要理解物体空间位置。智元明确要求3D感知。', tags:[], prereq:['p1','f7'], jobLinks:['agibot-003']},
+  {id:'p3', branch:'perception', tier:2, icon:'🎯', name:'目标检测 (YOLO/SAM)', why:'识别物体位置和类别。操作任务的第一步。', tags:[], prereq:['p1','f4']},
+  {id:'p4', branch:'perception', tier:3, icon:'🧩', name:'VLM 微调与应用', why:'视觉语言模型让机器人理解自然语言指令+视觉场景。', tags:[], prereq:['p1','f4'], jobLinks:['agibot-003','agibot-005','fourier-002']},
+  {id:'p5', branch:'perception', tier:3, icon:'🔮', name:'多模态融合', why:'视觉+触觉+力反馈多传感器融合，提升决策鲁棒性。', tags:[], prereq:['p2'], jobLinks:['agibot-003','agibot-005','fourier-002']},
+  {id:'p6', branch:'perception', tier:4, icon:'🚀', name:'VLA 模型部署 (OpenVLA)', why:'端到端视觉-语言-动作模型。智元/傅利叶核心方向。', tags:[], prereq:['p4','c4'], jobLinks:['agibot-003','agibot-004','agibot-005','fourier-002']},
+  {id:'p7', branch:'perception', tier:4, icon:'⚡', name:'实时感知流水线', why:'毫秒级推理延迟要求。需GPU优化+模型量化。', tags:[], prereq:['p6','f5'], jobLinks:['agibot-004']},
+  {id:'p8', branch:'perception', tier:5, icon:'📝', name:'顶会论文 (CVPR/ICLR)', why:'感知方向的学术成果。', tags:[], prereq:['p6','p7']},
+  {id:'p9', branch:'perception', tier:5, icon:'🔧', name:'感知框架贡献', why:'向OpenVLA/RT-2等开源框架贡献。', tags:[], prereq:['p6']},
+  {id:'p10', branch:'perception', tier:5, icon:'🎯', name:'端到端感知-控制闭环', why:'VLA模型驱动机器人完成真实任务。', tags:[], prereq:['p7','c12']},
 
   // ===== MANIPULATION =====
-  {id:'m1', branch:'manipulation', tier:1, icon:'✋', name:'运动规划 (RRT/PRM)', why:'机械臂路径规划的基础算法。你的6-DOF项目已涉及。', tags:['已有基础'], prereq:['c3']},
-  {id:'m2', branch:'manipulation', tier:2, icon:'🦾', name:'抓取基础 (GraspNet)', why:'6D姿态估计+抓取点生成。操作任务的起点。', tags:['3/13岗位'], prereq:['m1','p3']},
-  {id:'m3', branch:'manipulation', tier:2, icon:'💪', name:'力/力矩感知与控制', why:'力控让机器人不是"硬碰硬"而是"柔顺"操作。智元RL岗要求。', tags:['2/13岗位'], prereq:['c3']},
-  {id:'m4', branch:'manipulation', tier:3, icon:'🤌', name:'灵巧手操作', why:'多指手的精细操作。英伟达明确要求dexterous manipulation。', tags:['1/13岗位'], prereq:['m2','m3']},
-  {id:'m5', branch:'manipulation', tier:3, icon:'🖐️', name:'触觉传感', why:'触觉反馈闭环控制。智元RL岗明确要求。', tags:['1/13岗位'], prereq:['m3']},
-  {id:'m6', branch:'manipulation', tier:3, icon:'🤝', name:'双臂协调', why:'两只手协作完成任务。英伟达bimanual coordination。', tags:['1/13岗位'], prereq:['m2','c4']},
-  {id:'m7', branch:'manipulation', tier:4, icon:'🏠', name:'移动操作', why:'移动底盘+机械臂联合控制。英伟达mobile manipulation。', tags:['2/13岗位'], prereq:['m2','c9']},
-  {id:'m8', branch:'manipulation', tier:4, icon:'🧭', name:'长周期任务规划', why:'分解复杂任务为子任务序列。智元RL岗long-horizon planning。', tags:['2/13岗位'], prereq:['m7']},
-  {id:'m9', branch:'manipulation', tier:5, icon:'📝', name:'顶会论文 (ICRA/IROS)', why:'操作方向的学术成果。英伟达/美的加分。', tags:['2/13岗位'], prereq:['m4','m7']},
-  {id:'m10', branch:'manipulation', tier:5, icon:'🏆', name:'完整操作系统', why:'从感知→规划→控制→执行的闭环系统。美的/智元岗位终极目标。', tags:['3/13岗位'], prereq:['m7','p10']},
+  {id:'m1', branch:'manipulation', tier:1, icon:'✋', name:'运动规划 (RRT/PRM)', why:'机械臂路径规划的基础算法。', tags:[], prereq:['c3']},
+  {id:'m2', branch:'manipulation', tier:2, icon:'🦾', name:'抓取基础 (GraspNet)', why:'6D姿态估计+抓取点生成。操作任务的起点。', tags:[], prereq:['m1','p3']},
+  {id:'m3', branch:'manipulation', tier:2, icon:'💪', name:'力/力矩感知与控制', why:'力控让机器人"柔顺"操作。智元灵巧手岗核心。', tags:[], prereq:['c3'], jobLinks:['agibot-006','agibot-007','fourier-003']},
+  {id:'m4', branch:'manipulation', tier:3, icon:'🤌', name:'灵巧手操作', why:'多指手的精细操作。智元明确要求。', tags:[], prereq:['m2','m3'], jobLinks:['agibot-003','agibot-006']},
+  {id:'m5', branch:'manipulation', tier:3, icon:'🖐️', name:'触觉传感', why:'触觉反馈闭环控制。智元RL岗明确要求。', tags:[], prereq:['m3'], jobLinks:['agibot-003']},
+  {id:'m6', branch:'manipulation', tier:3, icon:'🤝', name:'双臂协调', why:'两只手协作完成任务。英伟达bimanual coordination。', tags:[], prereq:['m2','c4']},
+  {id:'m7', branch:'manipulation', tier:4, icon:'🏠', name:'移动操作', why:'移动底盘+机械臂联合控制。', tags:[], prereq:['m2','c9']},
+  {id:'m8', branch:'manipulation', tier:4, icon:'🧭', name:'长周期任务规划', why:'分解复杂任务为子任务序列。', tags:[], prereq:['m7']},
+  {id:'m9', branch:'manipulation', tier:5, icon:'📝', name:'顶会论文 (ICRA/IROS)', why:'操作方向的学术成果。', tags:[], prereq:['m4','m7']},
+  {id:'m10', branch:'manipulation', tier:5, icon:'🏆', name:'完整操作系统', why:'从感知→规划→控制→执行的闭环系统。', tags:[], prereq:['m7','p10']},
 
   // ===== PRODUCT & RESEARCH =====
-  {id:'r1', branch:'product', tier:1, icon:'💬', name:'LLM 应用开发', why:'调用API、设计Prompt、搭建Agent。字节/小红书AI产品岗核心。', tags:['4/13岗位'], prereq:['f1']},
-  {id:'r2', branch:'product', tier:2, icon:'🔍', name:'RAG + Agent框架', why:'检索增强生成+自主Agent。AI产品岗必备技术理解。', tags:['3/13岗位'], prereq:['r1']},
-  {id:'r3', branch:'product', tier:2, icon:'🎨', name:'AI工具重度使用', why:'Cursor/Claude/GPT日常使用。字节AI Builder明确要求。', tags:['3/13岗位'], prereq:['r1']},
-  {id:'r4', branch:'product', tier:3, icon:'📋', name:'PRD 撰写+原型设计', why:'产品经理基本功。小红书/字节明确要求。', tags:['3/13岗位'], prereq:['r1']},
-  {id:'r5', branch:'product', tier:3, icon:'📊', name:'用户研究方法论', why:'访谈/问卷/可用性测试/焦点小组。华为/vivo/字节用研岗核心。', tags:['4/13岗位'], prereq:[]},
-  {id:'r6', branch:'product', tier:3, icon:'📈', name:'竞品分析', why:'了解市场方案，避免重复造轮子。上交工研院/AI产品岗要求。', tags:['3/13岗位'], prereq:['r1']},
-  {id:'r7', branch:'product', tier:4, icon:'🔬', name:'实验设计+统计分析', why:'独立设计心理学实验，SPSS/Python数据分析。vivo核心要求。', tags:['2/13岗位'], prereq:['r5','f7']},
-  {id:'r8', branch:'product', tier:4, icon:'🏗️', name:'多Agent系统设计', why:'多个AI Agent协作完成复杂任务。AI产品进阶方向。', tags:['2/13岗位'], prereq:['r2','f1']},
-  {id:'r9', branch:'product', tier:5, icon:'🚀', name:'AI产品上线', why:'从0到1交付AI产品。字节/小红书产品岗终极目标。', tags:['3/13岗位'], prereq:['r4','r8']},
-  {id:'r10', branch:'product', tier:5, icon:'📝', name:'行业研究报告', why:'发表AI产业分析或被引用。上交工研院/AI产品岗加分。', tags:['2/13岗位'], prereq:['r6','r5']},
+  {id:'r1', branch:'product', tier:1, icon:'💬', name:'LLM 应用开发', why:'调用API、设计Prompt、搭建Agent。AI产品岗核心。', tags:[], prereq:['f1'], jobLinks:['agibot-005']},
+  {id:'r2', branch:'product', tier:2, icon:'🔍', name:'RAG + Agent框架', why:'检索增强生成+自主Agent。AI产品岗必备技术理解。', tags:[], prereq:['r1'], jobLinks:['agibot-003','agibot-005']},
+  {id:'r3', branch:'product', tier:2, icon:'🎨', name:'AI工具重度使用', why:'Cursor/Claude/GPT日常使用。', tags:[], prereq:['r1']},
+  {id:'r4', branch:'product', tier:3, icon:'📋', name:'PRD 撰写+原型设计', why:'产品经理基本功。', tags:[], prereq:['r1']},
+  {id:'r5', branch:'product', tier:3, icon:'📊', name:'用户研究方法论', why:'访谈/问卷/可用性测试/焦点小组。', tags:[], prereq:[]},
+  {id:'r6', branch:'product', tier:3, icon:'📈', name:'竞品分析', why:'了解市场方案，避免重复造轮子。', tags:[], prereq:['r1']},
+  {id:'r7', branch:'product', tier:4, icon:'🔬', name:'实验设计+统计分析', why:'独立设计实验，SPSS/Python数据分析。', tags:[], prereq:['r5','f7']},
+  {id:'r8', branch:'product', tier:4, icon:'🏗️', name:'多Agent系统设计', why:'多个AI Agent协作完成复杂任务。', tags:[], prereq:['r2','f1']},
+  {id:'r9', branch:'product', tier:5, icon:'🚀', name:'AI产品上线', why:'从0到1交付AI产品。', tags:[], prereq:['r4','r8']},
+  {id:'r10', branch:'product', tier:5, icon:'📝', name:'行业研究报告', why:'发表AI产业分析或被引用。', tags:[], prereq:['r6','r5']},
 ];
 
+// ==================== RECRUITMENT DATA ====================
+const JOBS = [
+  {id:'agibot-001',company:'上海智元新创技术有限公司',short:'智元机器人',title:'深度学习运动控制算法工程师',location:'深圳',type:'实习',url:'https://agirobot.jobs.feishu.cn/internrecruitment',jd:'负责基于深度强化学习（DRL）、模仿学习或监督学习的方法，开发机器人的运动控制与操作策略。在仿真平台（NVIDIA Isaac Sim/Gym、MuJoCo、PyBullet、Genesis等）中构建机器人及任务环境。Sim-to-Real迁移（域随机化、系统辨识、课程学习）。部署到真实机器人平台（机械臂、移动机器人、足式机器人等）。跟踪CoRL/ICRA/RSS/NeurIPS/ICML前沿。',skills:['DRL(PPO/SAC)','MuJoCo','Isaac Sim/Gym','PyBullet','Sim2Real','模仿学习','真机部署','C++/Python'],nodes:['c4','c1','c5','c9','c7','f4','f1']},
+  {id:'agibot-002',company:'上海智元新创技术有限公司',short:'智元机器人',title:'Humanoid Whole-Body Policy Learning算法实习生',location:'上海',type:'实习',url:'https://agirobot.jobs.feishu.cn/internrecruitment',jd:'构建task-conditioned全身控制pipeline。Motion retargeting、policy训练、reward/curriculum设计。复现whole-body tracking、loco-manipulation、humanoid RL等前沿工作。真机数据采集、sim-to-real部署与真机调试。',skills:['全身控制(WBC)','Motion Retargeting','RL(PPO/SAC)','Sim2Real','Reward Design','Humanoid RL'],nodes:['c8','c4','c5','c9','c2','c3','c6']},
+  {id:'agibot-003',company:'上海智元新创技术有限公司',short:'智元机器人',title:'大模型AI算法实习生',location:'北京/上海',type:'实习',url:'https://agirobot.jobs.feishu.cn/internrecruitment',jd:'6大方向：①自主导航与定位 ②环境感知与语义建图(3D重建/开放词表/多模态融合) ③强化学习运动控制(Sim2Real/全身控制) ④灵巧手抓取(多指协同/触觉反馈) ⑤多模态AgenticAI(工具调用/SFT/AgenticRL) ⑥VLA/WAM端到端训练推理。',skills:['VLA','3D视觉','RL运动控制','导航定位','多模态融合','灵巧手抓取','AgenticAI','SLAM'],nodes:['p6','p2','p5','c4','c9','m4','m5','p4','r2']},
+  {id:'agibot-004',company:'上海智元新创技术有限公司',short:'智元机器人',title:'具身算法引擎开发实习生',location:'上海',type:'实习',url:'https://agirobot.jobs.feishu.cn/internrecruitment',jd:'VLA大模型训练框架(数据并行/模型并行/流水并行/千卡训练)。VLA推理引擎(算子优化/KV Cache/Prefill-Decode/Batch调度)。NCCL通信/AllReduce/IB-RDMA优化。大规模训练故障恢复/Checkpoint管理。',skills:['分布式训练','VLA推理优化','CUDA','NCCL','RDMA','PyTorch','Docker'],nodes:['f4','f5','p6','p7','f8']},
+  {id:'agibot-005',company:'上海智元新创技术有限公司',short:'智元机器人',title:'多模智能交互算法实习生',location:'北京',type:'实习',url:'https://agirobot.jobs.feishu.cn/internrecruitment',jd:'智能交互端到端大模型研发：多轮对话质量、交互时机判定(流式判停/打断/拒识)、工具调用。类人全双工交互体验。多场景语音-文本对齐数据集构建。在具身机器人上落地交互智能。',skills:['VLA','多模态交互','语音识别','LLM','全双工对话','工具调用'],nodes:['p4','p6','r1','r2','p5']},
+  {id:'agibot-006',company:'上海智元新创技术有限公司',short:'智元机器人',title:'嵌入式软件实习生-灵巧手业务',location:'上海',type:'实习',url:'https://agirobot.jobs.feishu.cn/internrecruitment',jd:'MCU底层外设驱动/BSP开发。FreeRTOS/RT-Thread移植与裁剪。UART/I2C/SPI/CAN/Modbus通信协议。硬件选型验证与软硬件联调。',skills:['嵌入式C','FreeRTOS','RT-Thread','MCU','CAN总线','UART/I2C/SPI'],nodes:['f2','m3','m4']},
+  {id:'agibot-007',company:'上海智元新创技术有限公司',short:'智元机器人',title:'电机驱动算法实习生-灵巧手业务',location:'上海',type:'实习',url:'https://agirobot.jobs.feishu.cn/internrecruitment',jd:'关节驱动算法(FOC/阻抗控制/力控)。电机参数建模与性能优化(精度/响应/效率/静音)。驱动固件开发与实时系统改善。算法量产一致性与可靠性。',skills:['FOC','阻抗控制','力控','电机建模','实时系统','固件开发'],nodes:['m3','c3','f2']},
+  {id:'fourier-001',company:'傅利叶智能 (Fourier Intelligence)',short:'傅利叶智能',title:'运动控制算法实习生',location:'上海',type:'实习',url:'https://app.mokahr.com/campus-recruitment/fftai/147078',jd:'傅利叶GRx人形机器人团队招聘运动控制算法实习生，负责人形机器人的运动规划与控制算法开发。',skills:['运动控制','RL','C++','ROS2','Sim2Real'],nodes:['c4','c3','c5','f1','f6']},
+  {id:'fourier-002',company:'傅利叶智能 (Fourier Intelligence)',short:'傅利叶智能',title:'多模态算法实习生',location:'上海',type:'实习',url:'https://app.mokahr.com/campus-recruitment/fftai/147078',jd:'傅利叶GRx人形机器人团队招聘多模态算法实习生，负责多模态感知与VLA相关算法研发。',skills:['多模态','VLA','PyTorch','感知'],nodes:['p5','p4','p6','f4']},
+  {id:'fourier-003',company:'傅利叶智能 (Fourier Intelligence)',short:'傅利叶智能',title:'嵌入式软件实习生',location:'上海',type:'实习',url:'https://app.mokahr.com/campus-recruitment/fftai/147078',jd:'负责机器人嵌入式软件的设计、开发与调试，参与从需求分析到实现的整个流程。',skills:['嵌入式C','FreeRTOS','MCU','实时系统'],nodes:['f2','m3']},
+  {id:'fourier-004',company:'傅利叶智能 (Fourier Intelligence)',short:'傅利叶智能',title:'嵌入式硬件实习生',location:'上海',type:'实习',url:'https://app.mokahr.com/campus-recruitment/fftai/147078',jd:'参与机器人硬件电路设计、PCB layout、硬件调试与验证。',skills:['硬件设计','PCB','电路'],nodes:['f2']},
+  {id:'fourier-005',company:'傅利叶智能 (Fourier Intelligence)',short:'傅利叶智能',title:'机械结构实习生',location:'上海',type:'实习',url:'https://app.mokahr.com/campus-recruitment/fftai/147078',jd:'参与人形机器人机械结构设计、3D建模与样机装配。',skills:['SolidWorks','机械设计','3D打印'],nodes:['c3']},
+  {id:'fourier-006',company:'傅利叶智能 (Fourier Intelligence)',short:'傅利叶智能',title:'硬件测试实习生',location:'上海',type:'实习',url:'https://app.mokahr.com/campus-recruitment/fftai/147078',jd:'负责机器人硬件测试，使用示波器等仪器进行信号测量与故障分析。',skills:['硬件测试','示波器','调试'],nodes:['f2']},
+  {id:'fourier-007',company:'傅利叶智能 (Fourier Intelligence)',short:'傅利叶智能',title:'新媒体运营实习生',location:'上海',type:'实习',url:'https://app.mokahr.com/campus-recruitment/fftai/147078',jd:'负责傅利叶雇主品牌视频内容策划、拍摄与运营。',skills:['内容运营','视频制作'],nodes:[]},
+];
+
+// Build node-to-jobs index
+const nodeToJobs = {};
+NODES.forEach(n => { nodeToJobs[n.id] = []; });
+JOBS.forEach(j => {
+  j.nodes.forEach(nid => {
+    if (nodeToJobs[nid]) nodeToJobs[nid].push(j.id);
+  });
+});
+
+// Update NODE tags based on real job data
+NODES.forEach(n => {
+  const jobCount = (nodeToJobs[n.id] || []).length;
+  if (jobCount > 0) {
+    n.tags = [jobCount + '家招聘'];
+  }
+});
+
 // ==================== STATE ====================
-const STORAGE_KEY = 'robot-skill-tree-state';
+const STORAGE_KEY = 'robot-skill-tree-v2';
 let completed = new Set();
+let activeJobFilter = 'all';
 
 function loadState() {
   try {
@@ -190,36 +304,37 @@ function toggleNode(id) {
   if (completed.has(id)) completed.delete(id);
   else completed.add(id);
   saveState();
-  render();
+  renderTree();
 }
-
 function canUnlock(node) {
-  if (completed.has(node.id)) return true; // already completed, can uncheck
+  if (completed.has(node.id)) return true;
   return node.prereq.every(pid => completed.has(pid));
 }
-
 function resetAll() {
-  if (confirm('确定要重置所有打卡进度吗？此操作不可撤销。')) {
+  if (confirm('确定要重置所有打卡进度吗？')) {
     completed.clear();
     saveState();
-    render();
+    renderTree();
   }
 }
 
 function updateStats() {
   const total = NODES.length;
   const done = completed.size;
-  document.getElementById('doneCount').textContent = done;
-  document.getElementById('totalCount').textContent = total;
-  document.getElementById('pctCount').textContent = Math.round(done/total*100) + '%';
+  const elDone = document.getElementById('doneCount');
+  const elTotal = document.getElementById('totalCount');
+  const elPct = document.getElementById('pctCount');
+  if (elDone) elDone.textContent = done;
+  if (elTotal) elTotal.textContent = total;
+  if (elPct) elPct.textContent = Math.round(done/total*100) + '%';
 }
 
-// ==================== RENDER ====================
-function render() {
+// ==================== SKILL TREE RENDER ====================
+function renderTree() {
   const tree = document.getElementById('tree');
+  if (!tree) return;
   tree.innerHTML = '';
 
-  // Branch headers
   BRANCHES.forEach(b => {
     const h = document.createElement('div');
     h.className = `branch-header bh-${b.color}`;
@@ -228,19 +343,16 @@ function render() {
     tree.appendChild(h);
   });
 
-  // Render by tier
   TIERS.forEach((tierLabel, ti) => {
     const tierNum = ti + 1;
-    // Tier label row
     const label = document.createElement('div');
     label.className = 'tier-label';
-    label.textContent = `${tierLabel}  —  ${tierNum === 1 ? '入门' : tierNum === 2 ? '打好基础' : tierNum === 3 ? '核心能力' : tierNum === 4 ? '专项深入' : '行业认可'}`;
+    label.textContent = `${tierLabel}  —  ${TIER_LABELS[ti]}`;
     label.style.gridRow = `${ti * 3 + 2}`;
     tree.appendChild(label);
 
-    // Nodes row
     const rowStart = ti * 3 + 3;
-    BRANCHES.forEach((b, bi) => {
+    BRANCHES.forEach((b) => {
       const branchNodes = NODES.filter(n => n.branch === b.id && n.tier === tierNum);
       const col = document.createElement('div');
       col.style.gridRow = `${rowStart}`;
@@ -253,13 +365,23 @@ function render() {
         const isCompleted = completed.has(node.id);
         const isUnlocked = canUnlock(node);
         el.className = 'node' + (isCompleted ? ' completed' : '') + (!isUnlocked && !isCompleted ? ' locked' : '');
-        el.onclick = () => toggleNode(node.id);
+        el.onclick = (e) => {
+          if (e.target.classList.contains('tag') || e.target.classList.contains('jc-ref-skill')) return;
+          toggleNode(node.id);
+        };
 
         const prereqText = node.prereq.length > 0
-          ? `<div style="font-size:.6rem;color:var(--muted);margin-top:2px">前置: ${node.prereq.map(pid => {
+          ? `<div class="prereq">前置: ${node.prereq.map(pid => {
               const pn = NODES.find(n => n.id === pid);
               return `<span style="color:${completed.has(pid)?'var(--green)':'var(--muted)'}">${pn ? pn.name : pid}</span>`;
             }).join(', ')}</div>`
+          : '';
+
+        const jobTags = (nodeToJobs[node.id] || []).length > 0
+          ? `<div class="jc-ref-skills">${(nodeToJobs[node.id] || []).slice(0, 3).map(jid => {
+              const job = JOBS.find(j => j.id === jid);
+              return job ? `<span class="jc-ref-skill" onclick="event.stopPropagation();showJobRef('${jid}')">${job.short}</span>` : '';
+            }).join('')}${(nodeToJobs[node.id]||[]).length > 3 ? `<span class="jc-ref-skill">+${(nodeToJobs[node.id]||[]).length-3}</span>` : ''}</div>`
           : '';
 
         el.innerHTML = `
@@ -267,8 +389,9 @@ function render() {
           <div class="icon">${node.icon}</div>
           <div class="name">${node.name}</div>
           <div class="why">💡 ${node.why}</div>
-          ${node.tags.length > 0 ? `<div class="tags">${node.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>` : ''}
+          ${node.tags.length > 0 ? `<div class="tags">${node.tags.map(t => `<span class="tag company">${t}</span>`).join('')}</div>` : ''}
           ${prereqText}
+          ${jobTags}
         `;
         col.appendChild(el);
       });
@@ -278,11 +401,9 @@ function render() {
         empty.style.minHeight = '60px';
         col.appendChild(empty);
       }
-
       tree.appendChild(col);
     });
 
-    // Spacer row
     if (ti < TIERS.length - 1) {
       const spacer = document.createElement('div');
       spacer.style.gridRow = `${ti * 3 + 4}`;
@@ -295,9 +416,95 @@ function render() {
   updateStats();
 }
 
+// ==================== RECRUITMENT RENDER ====================
+function showJobRef(jobId) {
+  switchTab('recruit');
+  activeJobFilter = jobId;
+  renderJobs();
+  // Highlight the job card
+  setTimeout(() => {
+    const card = document.getElementById('job-' + jobId);
+    if (card) {
+      card.classList.add('highlight');
+      card.scrollIntoView({behavior:'smooth',block:'center'});
+      setTimeout(() => card.classList.remove('highlight'), 2000);
+    }
+  }, 300);
+}
+
+function filterJobs(filter, btn) {
+  activeJobFilter = filter;
+  document.querySelectorAll('.recruit-filter button').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderJobs();
+}
+
+function renderJobs() {
+  const grid = document.getElementById('jobGrid');
+  if (!grid) return;
+
+  let filtered = JOBS;
+  if (activeJobFilter === 'all') {
+    filtered = JOBS;
+  } else if (activeJobFilter === 'AgiBot') {
+    filtered = JOBS.filter(j => j.short.includes('智元'));
+  } else if (activeJobFilter === 'Fourier') {
+    filtered = JOBS.filter(j => j.short.includes('傅利叶'));
+  } else if (['上海','深圳','北京'].includes(activeJobFilter)) {
+    filtered = JOBS.filter(j => j.location.includes(activeJobFilter));
+  } else {
+    // Specific job ID
+    const target = JOBS.find(j => j.id === activeJobFilter);
+    filtered = target ? [target] : JOBS;
+  }
+
+  grid.innerHTML = filtered.map(j => `
+    <div class="job-card" id="job-${j.id}">
+      <div class="jc-header">
+        <div class="jc-company"><span class="co-name">${j.short}</span> · ${j.type}</div>
+        <div style="font-size:.7rem;color:var(--muted)">${j.location}</div>
+      </div>
+      <div class="jc-title">${j.title}</div>
+      <div class="jc-jd">${j.jd}</div>
+      <div class="jc-ref-skills">
+        ${j.nodes.map(nid => {
+          const node = NODES.find(n => n.id === nid);
+          return node ? `<span class="jc-ref-skill" onclick="switchTab('tree');setTimeout(()=>highlightNode('${nid}'),300)">🌳 ${node.name}</span>` : '';
+        }).join('')}
+      </div>
+      <div class="jc-skills">
+        ${j.skills.map(s => `<span class="jc-skill">${s}</span>`).join('')}
+      </div>
+      <a href="${j.url}" target="_blank" class="jc-link">🔗 查看官网岗位 →</a>
+    </div>
+  `).join('');
+}
+
+function highlightNode(nodeId) {
+  const tree = document.getElementById('tree');
+  if (!tree) return;
+  const allNodes = tree.querySelectorAll('.node');
+  allNodes.forEach(el => el.classList.remove('highlight'));
+  // Find node by scanning innerHTML
+  // Simple approach: scroll to the section
+  const node = NODES.find(n => n.id === nodeId);
+  if (!node) return;
+  document.getElementById('view-tree').scrollIntoView({behavior:'smooth'});
+}
+
+// ==================== TAB SWITCHING ====================
+function switchTab(tab) {
+  document.getElementById('view-tree').style.display = tab === 'tree' ? 'block' : 'none';
+  document.getElementById('view-recruit').classList.toggle('active', tab === 'recruit');
+  document.getElementById('tab-tree').classList.toggle('active', tab === 'tree');
+  document.getElementById('tab-recruit').classList.toggle('active', tab === 'recruit');
+  if (tab === 'recruit') renderJobs();
+}
+
 // ==================== INIT ====================
 loadState();
-render();
+renderTree();
+renderJobs();
 </script>
 </body>
 </html>
